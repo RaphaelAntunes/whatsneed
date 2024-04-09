@@ -186,7 +186,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
           ...values, schedules, promptId: selectedPrompt ? selectedPrompt : null
         });
       }
-      toast.success("Queue saved successfully");
+      toast.success("Fila salva com sucesso");
       handleClose();
     } catch (err) {
       toastError(err);

@@ -43,7 +43,7 @@ import { i18n } from "../../translate/i18n";
 import toastError from "../../errors/toastError";
 import { AuthContext } from "../../context/Auth/AuthContext";
 import usePlans from "../../hooks/usePlans";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory } from "react-router-dom";
 
 const reducer = (state, action) => {
   if (action.type === "LOAD_INTEGRATIONS") {
@@ -201,7 +201,7 @@ const QueueIntegration = () => {
   const handleDeleteIntegration = async (integrationId) => {
     try {
       await api.delete(`/queueIntegration/${integrationId}`);
-      toast.success(i18n.t("queueIntegration.toasts.deleted"));
+      toast.success(i18n.t("Integração excluída"));
     } catch (err) {
       toastError(err);
     }

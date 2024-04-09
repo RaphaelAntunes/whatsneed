@@ -73,6 +73,7 @@ export function PlanManagerForm(props) {
         connections: 0,
         queues: 0,
         value: 0,
+        PlansTime: 0,
         useCampaigns: true,
         useSchedules: true,
         useInternalChat: true,
@@ -294,6 +295,27 @@ export function PlanManagerForm(props) {
                                 </Field>
                             </FormControl>
                         </Grid>
+
+                        {/* Tempo de Plano */}
+                        <Grid xs={12} sm={8} md={2} item>
+                            <FormControl margin="dense" variant="outlined" fullWidth>
+                                <InputLabel htmlFor="PlansTime-selection">Tempo Plano</InputLabel>
+                                <Field
+                                    as={Select}
+                                    id="PlansTime-selection"
+                                    label="Tempo de Plano"
+                                    labelId="PlansTime-selection-label"
+                                    name="PlansTime"
+                                    margin="dense"
+                                >
+                                    <MenuItem value={1}>Mensal</MenuItem>
+                                    <MenuItem value={3}>Trimestral</MenuItem>
+                                    <MenuItem value={6}>Semestral</MenuItem>
+                                    <MenuItem value={12}>Anual</MenuItem>
+
+                                </Field>
+                            </FormControl>
+                        </Grid>
                     </Grid>
                     <Grid spacing={2} justifyContent="flex-end" container>
 
@@ -324,7 +346,7 @@ export function PlanManagerForm(props) {
 export function PlansManagerGrid(props) {
     const { records, onSelect } = props
     const classes = useStyles()
-    
+
     const renderCampaigns = (row) => {
         return row.useCampaigns === false ? `${i18n.t("plans.form.no")}` : `${i18n.t("plans.form.yes")}`;
     };
@@ -353,6 +375,22 @@ export function PlansManagerGrid(props) {
         return row.useIntegrations === false ? `${i18n.t("plans.form.no")}` : `${i18n.t("plans.form.yes")}`;
     };
 
+    const renderPlansTime = (row) => {
+        switch (row.PlansTime) {
+            case 1:
+                return 'Mensal';
+            case 3:
+                return 'Trimestral';
+            case 6:
+                return 'Semestral';
+            case 12:
+                return 'Anual';
+            default:
+                return 'Desconhecido';
+        }
+    };  
+
+
     return (
         <Paper className={classes.tableContainer}>
             <Table
@@ -376,6 +414,8 @@ export function PlansManagerGrid(props) {
                         <TableCell align="center">Kanban</TableCell>
                         <TableCell align="center">Open.Ai</TableCell>
                         <TableCell align="center">Integrações</TableCell>
+                        <TableCell align="center">Tempo de Plano</TableCell>
+
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -398,6 +438,8 @@ export function PlansManagerGrid(props) {
                             <TableCell align="center">{renderKanban(row)}</TableCell>
                             <TableCell align="center">{renderOpenAi(row)}</TableCell>
                             <TableCell align="center">{renderIntegrations(row)}</TableCell>
+                            <TableCell align="center">{renderPlansTime(row)}</TableCell>
+
                         </TableRow>
                     ))}
                 </TableBody>
@@ -419,6 +461,7 @@ export default function PlansManager() {
         connections: 0,
         queues: 0,
         value: 0,
+        PlansTime: 0,
         useCampaigns: true,
         useSchedules: true,
         useInternalChat: true,
@@ -490,6 +533,7 @@ export default function PlansManager() {
             connections: 0,
             queues: 0,
             value: 0,
+            PlansTime: 0,
             useCampaigns: true,
             useSchedules: true,
             useInternalChat: true,
@@ -517,6 +561,7 @@ export default function PlansManager() {
             connections: data.connections || 0,
             queues: data.queues || 0,
             value: data.value?.toLocaleString('pt-br', { minimumFractionDigits: 0 }) || 0,
+            PlansTime: 0,
             useCampaigns,
             useSchedules,
             useInternalChat,

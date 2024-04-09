@@ -117,7 +117,7 @@ export default function TicketMessagesDialog({ open, handleClose, ticketId }) {
         }
 
         if (data.action === "delete") {
-          toast.success("Ticket deleted sucessfully.");
+          toast.success("Ticket excluído com sucesso!");
           history.push("/tickets");
         }
       });

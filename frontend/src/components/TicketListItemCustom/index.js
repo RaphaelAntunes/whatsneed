@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     paddingLeft: 5,
     paddingRight: 5,
-    borderRadius: 3,
+    borderRadius: 10,
     fontSize: "0.8em",
     whiteSpace: "nowrap"
   },
@@ -68,11 +68,11 @@ const useStyles = makeStyles((theme) => ({
   newMessagesCount: {
     position: "absolute",
     alignSelf: "center",
-    marginRight: 8,
+    marginRight: 7,
     marginLeft: "auto",
     top: "10px",
     left: "20px",
-    borderRadius: 0,
+    borderRadius: 10,
   },
   noTicketsText: {
     textAlign: "center",
@@ -81,14 +81,14 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "1.4",
   },
   connectionTag: {
-    background: "green",
+    background: "purple",
     color: "#FFF",
     marginRight: 1,
     padding: 1,
     fontWeight: 'bold',
     paddingLeft: 5,
     paddingRight: 5,
-    borderRadius: 3,
+    borderRadius: 7,
     fontSize: "0.8em",
     whiteSpace: "nowrap"
   },
@@ -171,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
   },
   Radiusdot: {
     "& .MuiBadge-badge": {
-      borderRadius: 2,
+      borderRadius: 10,
       position: "inherit",
       height: 16,
       margin: 2,
@@ -377,7 +377,7 @@ const useStyles = makeStyles((theme) => ({
         })}
       >
         <Tooltip arrow placement="right" title={ticket.queue?.name?.toUpperCase() || "SEM FILA"} >
-          <span style={{ backgroundColor: ticket.queue?.color || "#7C7C7C" }} className={classes.ticketQueueColor}></span>
+          <span style={{ backgroundColor: 'transparent' }} className={classes.ticketQueueColor}></span>
         </Tooltip>
         <ListItemAvatar>
           {ticket.status !== "pending" ?
@@ -387,7 +387,7 @@ const useStyles = makeStyles((theme) => ({
                 marginLeft: "-3px",
                 width: "55px",
                 height: "55px",
-                borderRadius: "10%",
+                borderRadius: "60%",
               }}
               src={ticket?.contact?.profilePicUrl}
             />
@@ -398,7 +398,7 @@ const useStyles = makeStyles((theme) => ({
                 marginLeft: "0px",
                 width: "50px",
                 height: "50px",
-                borderRadius: "10%",
+                borderRadius: "60%",
               }}
               src={ticket?.contact?.profilePicUrl}
             />
@@ -500,7 +500,7 @@ const useStyles = makeStyles((theme) => ({
           {ticket.status === "pending" && (
             <ButtonWithSpinner
               //color="primary"
-              style={{ backgroundColor: 'green', color: 'white', padding: '0px', bottom: '17px', borderRadius: '0px', left: '8px', fontSize: '0.6rem' }}
+              style={{ backgroundColor: 'green', color: 'white', padding: '0px', bottom: '25px', borderRadius: '10px', left: '308px', fontSize: '0.6rem' }}
               variant="contained"
               className={classes.acceptButton}
               size="small"
@@ -515,7 +515,7 @@ const useStyles = makeStyles((theme) => ({
           {(ticket.status !== "closed") && (
             <ButtonWithSpinner
               //color="primary"
-              style={{ backgroundColor: 'red', color: 'white', padding: '0px', bottom: '0px', borderRadius: '0px', left: '8px', fontSize: '0.6rem' }}
+              style={{ backgroundColor: 'red', color: 'white', padding: '0px', bottom: '4px', borderRadius: '10px', left: '308px', fontSize: '0.6rem' }}
               variant="contained"
               className={classes.acceptButton}
               size="small"
@@ -529,7 +529,7 @@ const useStyles = makeStyles((theme) => ({
           {(ticket.status === "closed") && (
             <ButtonWithSpinner
               //color="primary"
-              style={{ backgroundColor: 'red', color: 'white', padding: '0px', bottom: '0px', borderRadius: '0px', left: '8px', fontSize: '0.6rem' }}
+              style={{ backgroundColor: 'red', color: 'white', padding: '0px', bottom: '4px', borderRadius: '10px', left: '308px', fontSize: '0.6rem' }}
               variant="contained"
               className={classes.acceptButton}
               size="small"

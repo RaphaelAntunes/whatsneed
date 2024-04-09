@@ -1,0 +1,156 @@
+/* Estilo global para resetar margens, preenchimentos e caixas */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Adicione esta regra de mídia para desktop */
+@media screen and (min-width: 1200px) {
+  .img-logo-signup {
+    display: none;
+  }
+}
+
+/* Estilo do corpo do documento */
+body {
+  font-family: "Poppins", sans-serif;
+  /* overflow: hidden; */
+}
+
+/* Estilos da seção geral de signup */
+.geral-signup {
+  display: flex;
+}
+
+/* Estilos do logotipo de signup */
+.img-logo-signup {
+  width: 300px;
+  height: 100px;
+}
+
+/* Estilos da seção de registro */
+.register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Estilos do papel (paper) */
+.paper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 500px;
+  /* max-height: 100vh; */
+}
+
+/* Estilos do container de signup */
+.container-signup {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  padding: 10px;
+  /* max-height: 100vh; */
+}
+
+/* Estilos do cabeçalho h4 */
+.h4 {
+  caret-color: #A200FF; /* Alteração da cor de azul para roxo */
+  color: #A200FF; /* Alteração da cor de azul para roxo */
+  column-rule-color: #A200FF; /* Alteração da cor de azul para roxo */
+  font-size: 34px;
+  line-height: 41.99px;
+  margin: 10px 0 25px;
+}
+
+/* Estilos do span */
+.span {
+  font-size: 16px;
+  line-height: 28px;
+}
+
+/* Estilos do container de imagem de signup */
+.container-img-signup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Estilos da imagem de signup */
+.img-signup {
+  background-image: url(../../assets/backgroundStep.png);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: fixed;
+  width: 700px;
+  height: 100vh;
+  object-fit: cover;
+}
+
+/* Estilos do parágrafo (p) */
+.p {
+  font-size: 12px;
+  color: #999;
+}
+
+/* Estilos do rodapé */
+.footer {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+/* Estilos do link no rodapé */
+.footer a {
+  text-decoration: none;
+  cursor: pointer;
+  color: #A200FF; /* Alteração da cor de azul para roxo */
+}
+
+/* Estilos do link no rodapé quando hover */
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* Estilos responsivos para telas pequenas */
+@media screen and (max-width: 320px) {
+  .container-img-signup {
+    display: none;
+  }
+  .paper {
+    width: 300px;
+  }
+  .img-logo-signup {
+    width: 200px;
+    height: 70px;
+  }
+}
+
+@media screen and (max-width: 940px) {
+  .container-img-signup {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .paper {
+    max-width: 450px;
+    max-height: fit-content;
+  }
+  .img-signup {
+    width: 499px;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .img-signup {
+    width: 50%;
+  }
+}

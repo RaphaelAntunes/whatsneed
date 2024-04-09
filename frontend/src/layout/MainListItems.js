@@ -9,24 +9,38 @@ import Divider from "@material-ui/core/Divider";
 import { Badge, Collapse, List } from "@material-ui/core";
 import DashboardOutlinedIcon from "@material-ui/icons/DashboardOutlined";
 import WhatsAppIcon from "@material-ui/icons/WhatsApp";
-import SyncAltIcon from "@material-ui/icons/SyncAlt";
-import SettingsOutlinedIcon from "@material-ui/icons/SettingsOutlined";
-import PeopleAltOutlinedIcon from "@material-ui/icons/PeopleAltOutlined";
-import ContactPhoneOutlinedIcon from "@material-ui/icons/ContactPhoneOutlined";
-import AccountTreeOutlinedIcon from "@material-ui/icons/AccountTreeOutlined";
-import FlashOnIcon from "@material-ui/icons/FlashOn";
+//import SyncAltIcon from "@material-ui/icons/SyncAlt";
+import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined';
+//import SettingsOutlinedIcon from "@material-ui/icons/SettingsOutlined";
+import FingerprintOutlinedIcon from '@mui/icons-material/FingerprintOutlined';
+//import PeopleAltOutlinedIcon from "@material-ui/icons/PeopleAltOutlined";
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+//import ContactPhoneOutlinedIcon from "@material-ui/icons/ContactPhoneOutlined";
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+//import AccountTreeOutlinedIcon from "@material-ui/icons/AccountTreeOutlined";
+import ViewAgendaOutlinedIcon from '@mui/icons-material/ViewAgendaOutlined';
+//import FlashOnIcon from "@material-ui/icons/FlashOn";
+import DynamicFormIcon from '@mui/icons-material/DynamicForm';
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import CodeRoundedIcon from "@material-ui/icons/CodeRounded";
-import EventIcon from "@material-ui/icons/Event";
-import LocalOfferIcon from "@material-ui/icons/LocalOffer";
-import EventAvailableIcon from "@material-ui/icons/EventAvailable";
+//import EventIcon from "@material-ui/icons/Event";
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+//import LocalOfferIcon from "@material-ui/icons/LocalOffer";
+import DiscountOutlinedIcon from '@mui/icons-material/DiscountOutlined';
+//import EventAvailableIcon from "@material-ui/icons/EventAvailable";
+import WysiwygOutlinedIcon from '@mui/icons-material/WysiwygOutlined';
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import PeopleIcon from "@material-ui/icons/People";
-import ListIcon from "@material-ui/icons/ListAlt";
-import AnnouncementIcon from "@material-ui/icons/Announcement";
-import ForumIcon from "@material-ui/icons/Forum";
-import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+//import PeopleIcon from "@material-ui/icons/People";
+import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
+//import ListIcon from "@material-ui/icons/ListAlt";
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+//import AnnouncementIcon from "@material-ui/icons/Announcement";
+import ReportGmailerrorredOutlinedIcon from '@mui/icons-material/ReportGmailerrorredOutlined';
+//import ForumIcon from "@material-ui/icons/Forum";
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+//import LocalAtmIcon from '@material-ui/icons/LocalAtm';
+import RequestPageOutlinedIcon from '@mui/icons-material/RequestPageOutlined';
 import RotateRight from "@material-ui/icons/RotateRight";
 import { i18n } from "../translate/i18n";
 import { WhatsAppsContext } from "../context/WhatsApp/WhatsAppsContext";
@@ -35,13 +49,18 @@ import LoyaltyRoundedIcon from '@material-ui/icons/LoyaltyRounded';
 import { Can } from "../components/Can";
 import { socketConnection } from "../services/socket";
 import { isArray } from "lodash";
-import TableChartIcon from '@material-ui/icons/TableChart';
+//import TableChartIcon from '@material-ui/icons/TableChart';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import api from "../services/api";
-import BorderColorIcon from '@material-ui/icons/BorderColor';
+//import BorderColorIcon from '@material-ui/icons/BorderColor';
+import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 import ToDoList from "../pages/ToDoList/";
 import toastError from "../errors/toastError";
 import { makeStyles } from "@material-ui/core/styles";
-import { AllInclusive, AttachFile, BlurCircular, DeviceHubOutlined, Schedule } from '@material-ui/icons';
+//import { AllInclusive, AttachFile, DeviceHubOutlined, Schedule } from '@material-ui/icons';
+import CloudOutlinedIcon from '@mui/icons-material/CloudOutlined';
+import WebhookOutlinedIcon from '@mui/icons-material/WebhookOutlined';
+import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import usePlans from "../hooks/usePlans";
 import Typography from "@material-ui/core/Typography";
 
@@ -67,9 +86,9 @@ function ListItemLink(props) {
 
   return (
     <li>
-      <ListItem button dense component={renderLink} className={className}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-        <ListItemText primary={primary} />
+      <ListItem button dense component={renderLink} className={className} style={{ color: 'black' }}>
+        {icon ? <ListItemIcon style={{ color: 'black' }}>{icon}</ListItemIcon> : null}
+        <ListItemText primary={primary} style={{ color: 'black' }} />
       </ListItem>
     </li>
   );
@@ -146,13 +165,11 @@ const MainListItems = (props) => {
   const [showInternalChat, setShowInternalChat] = useState(false);
   const [showExternalApi, setShowExternalApi] = useState(false);
 
-
   const [invisible, setInvisible] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
   const [searchParam] = useState("");
   const [chats, dispatch] = useReducer(reducer, []);
   const { getPlanCompany } = usePlans();
- 
 
   useEffect(() => {
     dispatch({ type: "RESET" });
@@ -175,8 +192,6 @@ const MainListItems = (props) => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -269,74 +284,112 @@ const MainListItems = (props) => {
     <div onClick={drawerClose}>
       <Can
         role={user.profile}
-        perform="dashboard:view"
-        yes={() => (
-          <ListItemLink
-            to="/"
-            primary="Dashboard"
-            icon={<DashboardOutlinedIcon />}
-          />
+        perform={"drawer-service-items:view"}
+        style={{
+          overflowY: "scroll",
+        }}
+        no={() => (
+          <>
+            <ListSubheader
+              hidden={collapsed}
+              style={{
+                position: "relative",
+                fontSize: "17px",
+                textAlign: "left",
+                paddingLeft: 20
+              }}
+              inset
+              color="inherit">
+              {i18n.t("Atendimento")}
+            </ListSubheader>
+            <>
+
+              <ListItemLink
+                to="/tickets"
+                primary={i18n.t("mainDrawer.listItems.tickets")}
+                icon={<WhatsAppIcon style={{ color: 'black' }} />}
+              />
+              <ListItemLink
+                to="/quick-messages"
+                primary={i18n.t("mainDrawer.listItems.quickMessages")}
+                icon={<DynamicFormIcon style={{ color: 'black' }} />}
+              />
+              {showKanban && (
+                <ListItemLink
+                  to="/kanban"
+                  primary="Kanban"
+                  icon={<SpaceDashboardIcon style={{ color: 'black' }} />}
+                />
+              )}
+              <ListItemLink
+                to="/todolist"
+                primary={i18n.t("Tarefas")}
+                icon={<PendingActionsOutlinedIcon style={{ color: 'black' }} />}
+              />
+              {showSchedules && (
+                <>
+                  <ListItemLink
+                    to="/schedules"
+                    primary={i18n.t("mainDrawer.listItems.schedules")}
+                    icon={<CalendarMonthOutlinedIcon style={{ color: 'black' }} />}
+                  />
+                </>
+              )}
+              <ListItemLink
+                to="/tags"
+                primary={i18n.t("mainDrawer.listItems.tags")}
+                icon={<DiscountOutlinedIcon style={{ color: 'black' }} />}
+              />
+              {showInternalChat && (
+                <>
+                  <ListItemLink
+                    to="/chats"
+                    primary={i18n.t("mainDrawer.listItems.chats")}
+                    icon={
+                      <Badge color="secondary" variant="dot" invisible={invisible}>
+                        <ForumOutlinedIcon style={{ color: 'black' }} />
+                      </Badge>
+                    }
+                  />
+                </>
+              )}
+              <ListItemLink
+                to="/helps"
+                primary={i18n.t("mainDrawer.listItems.helps")}
+                icon={<HelpOutlineIcon style={{ color: 'black' }} />}
+              />
+            </>
+          </>
         )}
       />
 
-      <ListItemLink
-        to="/tickets"
-        primary={i18n.t("mainDrawer.listItems.tickets")}
-        icon={<WhatsAppIcon />}
+      <Can
+        role={user.profile}
+        perform={"drawer-admin-items:view"}
+        yes={() => (
+          <>
+            <Divider />
+            <ListSubheader
+              hidden={collapsed}
+              style={{
+                position: "relative",
+                fontSize: "17px",
+                textAlign: "left",
+                paddingLeft: 20
+              }}
+              inset
+              color="inherit">
+              {i18n.t("Painel Principal")}
+            </ListSubheader>
+            <ListItemLink
+              small
+              to="/"
+              primary="Dashboard"
+              icon={<DashboardOutlinedIcon style={{ color: 'black' }} />}
+            />
+          </>
+        )}
       />
-	  
-	  <ListItemLink
-        to="/kanban"
-        primary={i18n.t("Kanban")}
-        icon={<TableChartIcon />}
-      />
-
-      <ListItemLink
-        to="/quick-messages"
-        primary={i18n.t("mainDrawer.listItems.quickMessages")}
-        icon={<FlashOnIcon />}
-      />
-	  
-	  <ListItemLink
-        to="/todolist"
-        primary={i18n.t("Tarefas")}
-        icon={<BorderColorIcon />}
-      />
-
-      <ListItemLink
-        to="/contacts"
-        primary={i18n.t("mainDrawer.listItems.contacts")}
-        icon={<ContactPhoneOutlinedIcon />}
-      />
-
-      <ListItemLink
-        to="/schedules"
-        primary={i18n.t("mainDrawer.listItems.schedules")}
-        icon={<EventIcon />}
-      />
-
-      <ListItemLink
-        to="/tags"
-        primary={i18n.t("mainDrawer.listItems.tags")}
-        icon={<LocalOfferIcon />}
-      />
-
-      <ListItemLink
-        to="/chats"
-        primary={i18n.t("mainDrawer.listItems.chats")}
-        icon={
-          <Badge color="secondary" variant="dot" invisible={invisible}>
-            <ForumIcon />
-          </Badge>
-        }
-      />
-
-      <ListItemLink
-        to="/helps"
-        primary={i18n.t("mainDrawer.listItems.helps")}
-        icon={<HelpOutlineIcon />}
-      />
-
       <Can
         role={user.profile}
         perform="drawer-admin-items:view"
@@ -353,9 +406,9 @@ const MainListItems = (props) => {
               }}
               inset
               color="inherit">
-              {i18n.t("mainDrawer.listItems.administration")}
+              {i18n.t("mainDrawer.listItems.management")}
             </ListSubheader>
-			
+
             {showCampaigns && (
               <>
                 <ListItem
@@ -363,15 +416,15 @@ const MainListItems = (props) => {
                   onClick={() => setOpenCampaignSubmenu((prev) => !prev)}
                 >
                   <ListItemIcon>
-                    <EventAvailableIcon />
+                    <WysiwygOutlinedIcon style={{ color: 'black' }} />
                   </ListItemIcon>
                   <ListItemText
                     primary={i18n.t("mainDrawer.listItems.campaigns")}
                   />
                   {openCampaignSubmenu ? (
-                    <ExpandLessIcon />
+                    <ExpandLessIcon style={{ color: 'black' }} />
                   ) : (
-                    <ExpandMoreIcon />
+                    <ExpandMoreIcon style={{ color: 'black' }} />
                   )}
                 </ListItem>
                 <Collapse
@@ -383,7 +436,7 @@ const MainListItems = (props) => {
                   <List component="div" disablePadding>
                     <ListItem onClick={() => history.push("/campaigns")} button>
                       <ListItemIcon>
-                        <ListIcon />
+                        <AssignmentOutlinedIcon style={{ color: 'black' }} />
                       </ListItemIcon>
                       <ListItemText primary="Listagem" />
                     </ListItem>
@@ -392,7 +445,7 @@ const MainListItems = (props) => {
                       button
                     >
                       <ListItemIcon>
-                        <PeopleIcon />
+                        <PermIdentityOutlinedIcon style={{ color: 'black' }} />
                       </ListItemIcon>
                       <ListItemText primary="Listas de Contatos" />
                     </ListItem>
@@ -401,7 +454,7 @@ const MainListItems = (props) => {
                       button
                     >
                       <ListItemIcon>
-                        <SettingsOutlinedIcon />
+                        <FingerprintOutlinedIcon style={{ color: 'black' }} />
                       </ListItemIcon>
                       <ListItemText primary="Configurações" />
                     </ListItem>
@@ -413,14 +466,14 @@ const MainListItems = (props) => {
               <ListItemLink
                 to="/announcements"
                 primary={i18n.t("mainDrawer.listItems.annoucements")}
-                icon={<AnnouncementIcon />}
+                icon={<ReportGmailerrorredOutlinedIcon style={{ color: 'black' }} />}
               />
             )}
             {showOpenAi && (
               <ListItemLink
                 to="/prompts"
                 primary={i18n.t("mainDrawer.listItems.prompts")}
-                icon={<AllInclusive />}
+                icon={<WebhookOutlinedIcon style={{ color: 'black' }} />}
               />
             )}
 
@@ -428,7 +481,7 @@ const MainListItems = (props) => {
               <ListItemLink
                 to="/queue-integration"
                 primary={i18n.t("mainDrawer.listItems.queueIntegration")}
-                icon={<DeviceHubOutlined />}
+                icon={<PolylineOutlinedIcon style={{ color: 'black' }} />}
               />
             )}
             <ListItemLink
@@ -436,46 +489,50 @@ const MainListItems = (props) => {
               primary={i18n.t("mainDrawer.listItems.connections")}
               icon={
                 <Badge badgeContent={connectionWarning ? "!" : 0} color="error">
-                  <SyncAltIcon />
+                  <SwapHorizOutlinedIcon style={{ color: 'black' }} />
                 </Badge>
               }
             />
             <ListItemLink
               to="/files"
               primary={i18n.t("mainDrawer.listItems.files")}
-              icon={<AttachFile />}
+              icon={<CloudOutlinedIcon style={{ color: 'black' }} />}
             />
             <ListItemLink
               to="/queues"
               primary={i18n.t("mainDrawer.listItems.queues")}
-              icon={<AccountTreeOutlinedIcon />}
+              icon={<ViewAgendaOutlinedIcon style={{ color: 'black' }} />}
             />
             <ListItemLink
               to="/users"
               primary={i18n.t("mainDrawer.listItems.users")}
-              icon={<PeopleAltOutlinedIcon />}
+              icon={<GroupsOutlinedIcon style={{ color: 'black' }} />}
             />
             {showExternalApi && (
               <>
                 <ListItemLink
                   to="/messages-api"
                   primary={i18n.t("mainDrawer.listItems.messagesAPI")}
-                  icon={<CodeRoundedIcon />}
+                  icon={<CodeRoundedIcon style={{ color: 'black' }} />}
                 />
               </>
             )}
             <ListItemLink
+                to="/contacts"
+                primary={i18n.t("mainDrawer.listItems.contacts")}
+                icon={<PeopleAltOutlinedIcon style={{ color: 'black' }} />}
+              />
+            <ListItemLink
               to="/financeiro"
               primary={i18n.t("mainDrawer.listItems.financeiro")}
-              icon={<LocalAtmIcon />}
+              icon={<RequestPageOutlinedIcon style={{ color: 'black' }} />}
             />
 
             <ListItemLink
               to="/settings"
               primary={i18n.t("mainDrawer.listItems.settings")}
-              icon={<SettingsOutlinedIcon />}
-            />
-			
+              icon={<FingerprintOutlinedIcon style={{ color: 'black' }} />}
+            />			
 			
             {!collapsed && <React.Fragment>
               <Divider />
@@ -485,8 +542,8 @@ const MainListItems = (props) => {
                 <img style={{ width: "100%", padding: "10px" }} src={logo} alt="image" />            
               </Hidden> 
               */}
-              <Typography style={{ fontSize: "12px", padding: "10px", textAlign: "right", fontWeight: "bold" }}>
-                Versão: 4.0.0
+              <Typography style={{ fontSize: "12px", padding: "10px", textAlign: "right", fontWeight: "bold", color: 'black' }}>
+                Versão: 0.3.0
               </Typography>
             </React.Fragment>
             }

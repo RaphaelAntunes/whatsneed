@@ -109,7 +109,7 @@ const Ticket = () => {
       }
 
       if (data.action === "delete") {
-        toast.success("Ticket deleted sucessfully.");
+        toast.success("Ticket resolvido com sucesso!");
         history.push("/tickets");
       }
     });
