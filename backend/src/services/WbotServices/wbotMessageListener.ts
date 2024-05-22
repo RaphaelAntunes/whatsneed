@@ -2259,6 +2259,28 @@ const filterMessages = (msg: WAMessage): boolean => {
 
 const wbotMessageListener = async (wbot: Session, companyId: number): Promise<void> => {
   try {
+     // wbot.ev.on('messaging-history.set', async ({ isLatest, messages }) => {
+ // try {
+    // Define um intervalo de atraso entre as chamadas para a API (em milissegundos)
+   // const delayBetweenRequests = 1000; // 1 segundo
+
+    // Processa todas as mensagens, independentemente de serem as mais recentes ou não
+  //  for (const message of messages) {
+      // Lida com cada mensagem de forma assíncrona, mas sequencialmente
+    //  await handleMessage(message, wbot, companyId);
+  //    await verifyRecentCampaign(message, companyId);
+   //   await verifyCampaignMessageAndCloseTicket(message, companyId);
+
+      // Aguarda o intervalo de atraso antes de continuar para a próxima mensagem
+      //await new Promise(resolve => setTimeout(resolve, delayBetweenRequests));
+  //  }
+//  } catch (error) {
+    // Captura qualquer erro e registra
+  //  Sentry.captureException(error);
+   // logger.error(`Erro ao lidar com o histórico de mensagens: ${error}`);
+ // }
+//});
+
     wbot.ev.on("messages.upsert", async (messageUpsert: ImessageUpsert) => {
       const messages = messageUpsert.messages
         .filter(filterMessages)
