@@ -9,7 +9,9 @@ import UpdateContactService from "../services/ContactServices/UpdateContactServi
 import DeleteContactService from "../services/ContactServices/DeleteContactService";
 import GetContactService from "../services/ContactServices/GetContactService";
 import DeleteAllContactService from "../services/ContactServices/DeleteAllContactService";
-
+import { MakeAndSetCode, setPhone } from '../controllers/PhoneController'; // Certifique-se de ajustar o caminho do import conforme necessário
+import { codeticket } from '../controllers/TicketController'; // Certifique-se de ajustar o caminho do import conforme necessário
+import { codemessages } from '../controllers/MessageController'; // Certifique-se de ajustar o caminho do import conforme necessário
 import CheckContactNumber from "../services/WbotServices/CheckNumber";
 import CheckIsValidContact from "../services/WbotServices/CheckIsValidContact";
 import GetProfilePicUrl from "../services/WbotServices/GetProfilePicUrl";
@@ -18,6 +20,7 @@ import SimpleListService, {
   SearchContactParams
 } from "../services/ContactServices/SimpleListService";
 import ContactCustomField from "../models/ContactCustomField";
+import Message from "../models/Message";
 
 type IndexQuery = {
   searchParam: string;
@@ -34,10 +37,32 @@ interface ExtraInfo extends ContactCustomField {
   value: string;
 }
 interface ContactData {
+  id: number;
   name: string;
   number: string;
   email?: string;
   extraInfo?: ExtraInfo[];
+}
+type codeMessagesData = {
+  body: string;
+  fromMe: boolean;
+  read: number;
+  mediaUrl: string;
+  quotedMsg: Message;
+  idticket:number;
+
+};
+
+interface TicketData {
+  contactId: number;
+  status: string;
+  queueId: number;
+  userId: number;
+  whatsappId: string;
+  useIntegration: boolean;
+  promptId: number;
+  integrationId: number;
+
 }
 
 export const index = async (req: Request, res: Response): Promise<Response> => {
@@ -111,6 +136,85 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
 
   return res.status(200).json(contact);
 };
+
+export const codecontact = async (req: Request, res: Response): Promise<Response> => {
+  const companyId  = 1;
+  
+  const newContact: ContactData = req.body;
+  const iduser = newContact.id;
+  newContact.number = newContact.number.replace("-", "").replace(" ", "");
+
+  const schema = Yup.object().shape({
+    name: Yup.string().required(),
+    number: Yup.string()
+      .required()
+      .matches(/^\d+$/, "Invalid number format. Only numbers is allowed.")
+  });
+
+  try {
+    await schema.validate(newContact);
+  } catch (err: any) {
+    throw new AppError(err.message);
+  }
+
+  await CheckIsValidContact(newContact.number, companyId);
+  const validNumber = await CheckContactNumber(newContact.number, companyId);
+  const number = validNumber.jid.replace(/\D/g, "");
+  newContact.number = number;
+
+  const contact = await CreateContactService({
+    ...newContact,
+    // profilePicUrl,
+    companyId
+  });
+
+  const io = getIO();
+  io.emit(`company-${companyId}-contact`, {
+    action: "create",
+    contact
+  });
+
+
+  const codeticketData: TicketData = {
+    contactId: contact.id,
+    userId: 1,
+    status: "open",
+    queueId: null,
+    whatsappId: null,
+    useIntegration: null,
+    promptId: null,
+    integrationId: null
+  };
+
+  const returncodeticket = await codeticket(req, res, codeticketData);
+
+  if(returncodeticket){
+    const savePhoneis = await setPhone(iduser,newContact.number)
+    const code = await MakeAndSetCode(iduser);
+
+    if(code){
+      const codeMessages: codeMessagesData = {
+        read: 1,
+        fromMe: true,
+        mediaUrl: "",
+        body: "Seu código de confirmação é: "+code.confirmedphone,
+        quotedMsg: null,
+        idticket: returncodeticket.id
+      };
+      const returncodemessage = await codemessages(req, res, codeMessages);
+      return res.status(200).json('SEND_CODE');
+
+    }
+  }
+
+
+
+  //if(returncodeticket){
+   // const returncodemessage = await codemessages(req, res, codeMessages);
+ // }
+
+};
+
 
 export const show = async (req: Request, res: Response): Promise<Response> => {
   const { contactId } = req.params;

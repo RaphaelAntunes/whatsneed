@@ -41,6 +41,7 @@ const useAuth = () => {
         const { data } = await api.post("/auth/refresh_token");
         if (data) {
           localStorage.setItem("token", JSON.stringify(data.token));
+
           api.defaults.headers.Authorization = `Bearer ${data.token}`;
         }
         return api(originalRequest);
@@ -61,6 +62,16 @@ const useAuth = () => {
       if (token) {
         try {
           const { data } = await api.post("/auth/refresh_token");
+          
+          console.log(data);
+
+          if(data.user.confirmedphone != "true"){
+            console.log(data);
+            localStorage.setItem("phonecheck", null);
+            history.push("/phone");
+
+          }
+
           api.defaults.headers.Authorization = `Bearer ${data.token}`;
           setIsAuth(true);
           setUser(data.user);
@@ -116,6 +127,7 @@ const useAuth = () => {
       const vencimento = moment(dueDate).format("DD/MM/yyyy");
 
       var diff = moment(dueDate).diff(moment(moment()).format());
+      console.log(data.user);
 
       var before = moment(moment().format()).isBefore(dueDate);
       var dias = moment.duration(diff).asDays();
@@ -132,7 +144,7 @@ const useAuth = () => {
         if (Math.round(dias) < 5) {
           toast.warn(`Sua assinatura vence em ${Math.round(dias)} ${Math.round(dias) === 1 ? 'dia' : 'dias'} `);
         }
-        history.push("/tickets");
+        history.push("/phone");
         setLoading(false);
       } else {
         toastError(`Opss! Sua assinatura venceu ${vencimento}.

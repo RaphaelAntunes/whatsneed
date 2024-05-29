@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.list = exports.removeAll = exports.remove = exports.update = exports.show = exports.store = exports.getContact = exports.index = void 0;
+exports.list = exports.removeAll = exports.remove = exports.update = exports.show = exports.codecontact = exports.store = exports.getContact = exports.index = void 0;
 const Yup = __importStar(require("yup"));
 const socket_1 = require("../libs/socket");
 const ListContactsService_1 = __importDefault(require("../services/ContactServices/ListContactsService"));
@@ -36,6 +36,9 @@ const UpdateContactService_1 = __importDefault(require("../services/ContactServi
 const DeleteContactService_1 = __importDefault(require("../services/ContactServices/DeleteContactService"));
 const GetContactService_1 = __importDefault(require("../services/ContactServices/GetContactService"));
 const DeleteAllContactService_1 = __importDefault(require("../services/ContactServices/DeleteAllContactService"));
+const PhoneController_1 = require("../controllers/PhoneController"); // Certifique-se de ajustar o caminho do import conforme necessário
+const TicketController_1 = require("../controllers/TicketController"); // Certifique-se de ajustar o caminho do import conforme necessário
+const MessageController_1 = require("../controllers/MessageController"); // Certifique-se de ajustar o caminho do import conforme necessário
 const CheckNumber_1 = __importDefault(require("../services/WbotServices/CheckNumber"));
 const CheckIsValidContact_1 = __importDefault(require("../services/WbotServices/CheckIsValidContact"));
 const AppError_1 = __importDefault(require("../errors/AppError"));
@@ -99,6 +102,69 @@ const store = async (req, res) => {
     return res.status(200).json(contact);
 };
 exports.store = store;
+const codecontact = async (req, res) => {
+    const companyId = 1;
+    const newContact = req.body;
+    const iduser = newContact.id;
+    newContact.number = newContact.number.replace("-", "").replace(" ", "");
+    const schema = Yup.object().shape({
+        name: Yup.string().required(),
+        number: Yup.string()
+            .required()
+            .matches(/^\d+$/, "Invalid number format. Only numbers is allowed.")
+    });
+    try {
+        await schema.validate(newContact);
+    }
+    catch (err) {
+        throw new AppError_1.default(err.message);
+    }
+    await (0, CheckIsValidContact_1.default)(newContact.number, companyId);
+    const validNumber = await (0, CheckNumber_1.default)(newContact.number, companyId);
+    const number = validNumber.jid.replace(/\D/g, "");
+    newContact.number = number;
+    const contact = await (0, CreateContactService_1.default)({
+        ...newContact,
+        // profilePicUrl,
+        companyId
+    });
+    const io = (0, socket_1.getIO)();
+    io.emit(`company-${companyId}-contact`, {
+        action: "create",
+        contact
+    });
+    const codeticketData = {
+        contactId: contact.id,
+        userId: 1,
+        status: "open",
+        queueId: null,
+        whatsappId: null,
+        useIntegration: null,
+        promptId: null,
+        integrationId: null
+    };
+    const returncodeticket = await (0, TicketController_1.codeticket)(req, res, codeticketData);
+    if (returncodeticket) {
+        const savePhoneis = await (0, PhoneController_1.setPhone)(iduser, newContact.number);
+        const code = await (0, PhoneController_1.MakeAndSetCode)(iduser);
+        if (code) {
+            const codeMessages = {
+                read: 1,
+                fromMe: true,
+                mediaUrl: "",
+                body: "Seu código de confirmação é: " + code.confirmedphone,
+                quotedMsg: null,
+                idticket: returncodeticket.id
+            };
+            const returncodemessage = await (0, MessageController_1.codemessages)(req, res, codeMessages);
+            return res.status(200).json('SEND_CODE');
+        }
+    }
+    //if(returncodeticket){
+    // const returncodemessage = await codemessages(req, res, codeMessages);
+    // }
+};
+exports.codecontact = codecontact;
 const show = async (req, res) => {
     const { contactId } = req.params;
     const { companyId } = req.user;

@@ -50,6 +50,14 @@ __decorate([
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
+], User.prototype, "phone", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "confirmedphone", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
 ], User.prototype, "allTicket", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.VIRTUAL),

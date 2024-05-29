@@ -279,7 +279,7 @@ const provider = async (ticket, msg, companyId, contact, wbot) => {
                         }
                         var optionsc = {
                             method: 'GET',
-                            url: 'https://www.asaas.com/api/v3/customers',
+                            url: 'https://www.sandbox.asaas.com/api/v3/customers',
                             params: { cpfCnpj: numberCPFCNPJ },
                             headers: {
                                 'Content-Type': 'application/json',
@@ -308,7 +308,7 @@ const provider = async (ticket, msg, companyId, contact, wbot) => {
                                 await wbot.sendMessage(`${ticket.contact.number}@${ticket.isGroup ? "g.us" : "s.whatsapp.net"}`, body);
                                 var optionsListpaymentOVERDUE = {
                                     method: 'GET',
-                                    url: 'https://www.asaas.com/api/v3/payments',
+                                    url: 'https://www.sandbox.asaas.com/api/v3/payments',
                                     params: { customer: id_cliente, status: 'OVERDUE' },
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -326,7 +326,7 @@ const provider = async (ticket, msg, companyId, contact, wbot) => {
                                         await wbot.sendMessage(`${ticket.contact.number}@${ticket.isGroup ? "g.us" : "s.whatsapp.net"}`, body);
                                         var optionsPENDING = {
                                             method: 'GET',
-                                            url: 'https://www.asaas.com/api/v3/payments',
+                                            url: 'https://www.sandbox.asaas.com/api/v3/payments',
                                             params: { customer: id_cliente, status: 'PENDING' },
                                             headers: {
                                                 'Content-Type': 'application/json',
@@ -364,7 +364,7 @@ const provider = async (ticket, msg, companyId, contact, wbot) => {
                                             //GET DADOS PIX
                                             var optionsGetPIX = {
                                                 method: 'GET',
-                                                url: `https://www.asaas.com/api/v3/payments/${id_payment_pending}/pixQrCode`,
+                                                url: `https://www.sandbox.asaas.com/api/v3/payments/${id_payment_pending}/pixQrCode`,
                                                 headers: {
                                                     'Content-Type': 'application/json',
                                                     access_token: asaastk
@@ -391,7 +391,7 @@ const provider = async (ticket, msg, companyId, contact, wbot) => {
                                                     await (0, wbotMessageListener_1.sendMessageImage)(wbot, contact, ticket, linkBoleto, '');
                                                     var optionsBoletopend = {
                                                         method: 'GET',
-                                                        url: `https://www.asaas.com/api/v3/payments/${id_payment_pending}/identificationField`,
+                                                        url: `https://www.sandbox.asaas.com/api/v3/payments/${id_payment_pending}/identificationField`,
                                                         headers: {
                                                             'Content-Type': 'application/json',
                                                             access_token: asaastk
@@ -493,7 +493,7 @@ const provider = async (ticket, msg, companyId, contact, wbot) => {
                                         //GET DADOS PIX
                                         var optionsGetPIX = {
                                             method: 'GET',
-                                            url: `https://www.asaas.com/api/v3/payments/${id_payment_overdue}/pixQrCode`,
+                                            url: `https://www.sandbox.asaas.com/api/v3/payments/${id_payment_overdue}/pixQrCode`,
                                             headers: {
                                                 'Content-Type': 'application/json',
                                                 access_token: asaastk
@@ -520,7 +520,7 @@ const provider = async (ticket, msg, companyId, contact, wbot) => {
                                                 await (0, wbotMessageListener_1.sendMessageImage)(wbot, contact, ticket, linkBoleto, '');
                                                 var optionsBoleto = {
                                                     method: 'GET',
-                                                    url: `https://www.asaas.com/api/v3/payments/${id_payment_overdue}/identificationField`,
+                                                    url: `https://www.sandbox.asaas.com/api/v3/payments/${id_payment_overdue}/identificationField`,
                                                     headers: {
                                                         'Content-Type': 'application/json',
                                                         access_token: asaastk

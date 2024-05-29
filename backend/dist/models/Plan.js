@@ -41,6 +41,10 @@ __decorate([
     __metadata("design:type", Number)
 ], Plan.prototype, "value", void 0);
 __decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", Number)
+], Plan.prototype, "PlansTime", void 0);
+__decorate([
     sequelize_typescript_1.CreatedAt,
     __metadata("design:type", Date)
 ], Plan.prototype, "createdAt", void 0);

@@ -24,7 +24,9 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
     user: {
       id: serializedUser.id,
       email: serializedUser.email,
-      companyId: serializedUser.companyId
+      companyId: serializedUser.companyId,
+
+      
     }
   });
 

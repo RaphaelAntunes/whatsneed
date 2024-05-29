@@ -50,7 +50,7 @@ const createSubscription = async (req, res) => {
         connections: Yup.string().required()
     });
     if (!(await schema.isValid(req.body))) {
-        throw new AppError_1.default("Validation fails", 400);
+        throw new AppError_1.default("Validation fails0", 400);
     }
     const { firstName, price, users, connections, address2, city, state, zipcode, country, plan, invoiceId } = req.body;
     const body = {
@@ -98,7 +98,7 @@ const createSubscription = async (req, res) => {
         });
     }
     catch (error) {
-        throw new AppError_1.default("Validation fails", 400);
+        throw new AppError_1.default("Validation fails1", 400);
     }
 };
 exports.createSubscription = createSubscription;
@@ -108,7 +108,7 @@ const createWebhook = async (req, res) => {
         url: Yup.string().required()
     });
     if (!(await schema.isValid(req.body))) {
-        throw new AppError_1.default("Validation fails", 400);
+        throw new AppError_1.default("Validation fails2", 400);
     }
     const { chave, url } = req.body;
     const body = {
@@ -146,7 +146,19 @@ const webhook = async (req, res) => {
                 const companyId = invoices.companyId;
                 const company = await Company_1.default.findByPk(companyId);
                 const expiresAt = new Date(company.dueDate);
-                expiresAt.setDate(expiresAt.getDate() + 30);
+                const recurrence = company.recurrence;
+                if (recurrence == 'MENSAL') {
+                    expiresAt.setDate(expiresAt.getDate() + 30);
+                }
+                else if ((recurrence == 'TRIMESTRAL')) {
+                    expiresAt.setDate(expiresAt.getDate() + 90);
+                }
+                else if ((recurrence == 'SEMESTRAL')) {
+                    expiresAt.setDate(expiresAt.getDate() + 180);
+                }
+                else if ((recurrence == 'ANUAL')) {
+                    expiresAt.setDate(expiresAt.getDate() + 360);
+                }
                 const date = expiresAt.toISOString().split("T")[0];
                 if (company) {
                     await company.update({

@@ -23,6 +23,7 @@ type StorePlanData = {
   connections: number | 0;
   queues: number | 0;
   value: number;
+  PlansTime: number;
   useCampaigns?: boolean;
   useSchedules?: boolean;
   useInternalChat?: boolean;
@@ -39,6 +40,7 @@ type UpdatePlanData = {
   connections?: number;
   queues?: number;
   value?: number;
+  PlansTime?: number;
   useCampaigns?: boolean;
   useSchedules?: boolean;
   useInternalChat?: boolean;

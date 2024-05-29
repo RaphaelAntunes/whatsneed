@@ -16,6 +16,7 @@ import UpdateTicketService from "../services/TicketServices/UpdateTicketService"
 import DeleteWhatsAppMessage from "../services/WbotServices/DeleteWhatsAppMessage";
 import SendWhatsAppMedia from "../services/WbotServices/SendWhatsAppMedia";
 import SendWhatsAppMessage from "../services/WbotServices/SendWhatsAppMessage";
+
 import CheckContactNumber from "../services/WbotServices/CheckNumber";
 import CheckIsValidContact from "../services/WbotServices/CheckIsValidContact";
 import GetProfilePicUrl from "../services/WbotServices/GetProfilePicUrl";
@@ -33,7 +34,19 @@ type MessageData = {
   closeTicket?: true;
 };
 
-export const index = async (req: Request, res: Response): Promise<Response> => {
+
+type codeMessagesData = {
+  body: string;
+  fromMe: boolean;
+  read: number;
+  mediaUrl: string;
+  quotedMsg: Message;
+  idticket:number;
+};
+
+
+
+export const index = async (req: Request, res: Response, ): Promise<Response> => {
   const { ticketId } = req.params;
   const { pageNumber } = req.query as IndexQuery;
   const { companyId, profile } = req.user;
@@ -81,6 +94,19 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
   }
 
   return res.send();
+};
+
+export const codemessages = async (req: Request, res: Response, codeMessages:codeMessagesData): Promise<void> => {
+  const  ticketId  = codeMessages.idticket;
+  const { body, quotedMsg }: codeMessagesData = codeMessages;
+  const companyId  = 1;
+
+  const ticket = await ShowTicketService(ticketId, companyId);
+
+  SetTicketMessagesAsRead(ticket);
+
+  const send = await SendWhatsAppMessage({ body, ticket, quotedMsg });
+
 };
 
 export const remove = async (

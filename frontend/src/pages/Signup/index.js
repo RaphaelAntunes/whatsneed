@@ -65,7 +65,7 @@ const handleNewUserMessage = (newMessage) => {
   );
 };
 
-const validCodes = ["PROMOWN", "OTHER_CODE", "ANOTHER_CODE", "YET_ANOTHER_CODE"];
+
 
 const UserSchema = Yup.object().shape({
   name: Yup.string()
@@ -96,18 +96,40 @@ const SignUp = () => {
 
   const [user, setUser] = useState(initialState);
   const [isCodeEnabled, setIsCodeEnabled] = useState(false);
-  const [validationCode, setValidationCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const dueDate = moment().add(7, "day").format();
+  const [plans, setPlans] = useState([]);
+
+
+
+
 
   const handleSignUp = async (values) => {
-    if (!validCodes.includes(validationCode)) {
-      toast.error("Código de validação inválido. Não foi possível registrar.");
-      return;
-    }
+    
+    
+    const renderPlansTime = (selectedPlan) => {
+      switch (selectedPlan.PlansTime) {
+        case 1:
+          return 'MENSAL';
+        case 3:
+          return 'TRIMESTRAL';
+        case 6:
+          return 'SEMESTRAL';
+        case 12:
+          return 'ANUAL';
+        default:
+          return 'Desconhecido';
+      }
+    };
+    const selectedPlan = plans.find(plan => plan.id == values.planId);
+    const planTime = renderPlansTime(selectedPlan);
 
-    Object.assign(values, { recurrence: "MENSAL" });
+
+
+
+
+    Object.assign(values, { recurrence: planTime });
     Object.assign(values, { dueDate: dueDate });
     Object.assign(values, { status: "t" });
     Object.assign(values, { campaignsEnabled: true });
@@ -122,7 +144,6 @@ const SignUp = () => {
     }
   };
 
-  const [plans, setPlans] = useState([]);
   const { list: listPlans } = usePlans();
 
   useEffect(() => {
@@ -150,6 +171,7 @@ const SignUp = () => {
       [name]: value,
     }));
   };
+
 
   return (
     <div className="geral-signup">
@@ -195,28 +217,28 @@ const SignUp = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-  <Field
-    as={TextField}
-    variant="outlined"
-    fullWidth
-    id="email"
-    label="Seu Email"
-    name="email"
-    error={touched.email && Boolean(errors.email)}
-    helperText={touched.email && errors.email}
-    autoComplete="email"
-    required
-    onChange={handleInputChange}
-  />
-  <Typography variant="body2" color="textSecondary">
-    Um e-mail válido é necessário para recuperar a senha.
-  </Typography>
-</Grid>
+                    <Field
+                      as={TextField}
+                      variant="outlined"
+                      fullWidth
+                      id="email"
+                      label="Seu Email"
+                      name="email"
+                      error={touched.email && Boolean(errors.email)}
+                      helperText={touched.email && errors.email}
+                      autoComplete="email"
+                      required
+                      onChange={handleInputChange}
+                    />
+                    <Typography variant="body2" color="textSecondary">
+                      Um e-mail válido é necessário para recuperar a senha.
+                    </Typography>
+                  </Grid>
                   <Grid item xs={12}>
                     <Field
                       as={TextField}
                       variant="outlined"
-                                            fullWidth
+                      fullWidth
                       id="phone"
                       label="Seu Número de Telefone"
                       name="phone"
@@ -259,43 +281,14 @@ const SignUp = () => {
                         <MenuItem key={key} value={plan.id}>
                           {plan.name} - Atendentes: {plan.users} - WhatsApp:{" "}
                           {plan.connections} - Filas: {plan.queues} - R${" "}
-                          {plan.value}
+                          {plan.value} - Recorrencia: {plan.PlansTime} Meses
                         </MenuItem>
                       ))}
                     </Field>
                   </Grid>
-                  {isCodeEnabled && (
-                    <Grid item xs={12}>
-                      <Field
-                        as={TextField}
-                        variant="outlined"
-                        fullWidth
-                        name="validationCode"
-                        label="Código de Validação"
-                        id="validationCode"
-                        autoComplete="validation-code"
-                        required
-                        value={validationCode}
-                        onChange={(e) => setValidationCode(e.target.value)}
-                      />
-                      {validCodes.includes(validationCode) ? (
-                        <Typography variant="body1">Código válido</Typography>
-                      ) : (
-                        <Typography variant="body1">Código inválido</Typography>
-                      )}
-                    </Grid>
-                  )}
+               
                 </Grid>
-                <Button
-                  type="button"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={handleWhatsAppClick}
-                >
-                  Solicitar Código
-                </Button>
+              
                 <Button
                   type="submit"
                   fullWidth

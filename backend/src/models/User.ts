@@ -37,6 +37,12 @@ class User extends Model<User> {
   email: string;
   
   @Column
+  phone: string;
+
+  @Column
+  confirmedphone: string;
+  
+  @Column
   allTicket: string;
 
   @Column(DataType.VIRTUAL)

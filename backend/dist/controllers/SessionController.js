@@ -24,7 +24,7 @@ const store = async (req, res) => {
         user: {
             id: serializedUser.id,
             email: serializedUser.email,
-            companyId: serializedUser.companyId
+            companyId: serializedUser.companyId,
         }
     });
     return res.status(200).json({

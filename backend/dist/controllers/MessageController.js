@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.send = exports.remove = exports.store = exports.index = void 0;
+exports.send = exports.remove = exports.codemessages = exports.store = exports.index = void 0;
 const AppError_1 = __importDefault(require("../errors/AppError"));
 const SetTicketMessagesAsRead_1 = __importDefault(require("../helpers/SetTicketMessagesAsRead"));
 const socket_1 = require("../libs/socket");
@@ -62,6 +62,15 @@ const store = async (req, res) => {
     return res.send();
 };
 exports.store = store;
+const codemessages = async (req, res, codeMessages) => {
+    const ticketId = codeMessages.idticket;
+    const { body, quotedMsg } = codeMessages;
+    const companyId = 1;
+    const ticket = await (0, ShowTicketService_1.default)(ticketId, companyId);
+    (0, SetTicketMessagesAsRead_1.default)(ticket);
+    const send = await (0, SendWhatsAppMessage_1.default)({ body, ticket, quotedMsg });
+};
+exports.codemessages = codemessages;
 const remove = async (req, res) => {
     const { messageId } = req.params;
     const { companyId } = req.user;

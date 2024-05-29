@@ -33,7 +33,7 @@ export const createSubscription = async (
   });
 
   if (!(await schema.isValid(req.body))) {
-    throw new AppError("Validation fails", 400);
+    throw new AppError("Validation fails0", 400);
   }
 
   const {
@@ -104,7 +104,7 @@ export const createSubscription = async (
 
     });
   } catch (error) {
-    throw new AppError("Validation fails", 400);
+    throw new AppError("Validation fails1", 400);
   }
 };
 
@@ -118,7 +118,7 @@ export const createWebhook = async (
   });
 
   if (!(await schema.isValid(req.body))) {
-    throw new AppError("Validation fails", 400);
+    throw new AppError("Validation fails2", 400);
   }
 
   const { chave, url } = req.body;
@@ -162,9 +162,19 @@ export const webhook = async (
         const invoices = await Invoices.findByPk(invoiceID);
         const companyId =invoices.companyId;
         const company = await Company.findByPk(companyId);
-
         const expiresAt = new Date(company.dueDate);
-        expiresAt.setDate(expiresAt.getDate() + 365);
+        const recurrence = company.recurrence;
+                if(recurrence == 'MENSAL'){
+                expiresAt.setDate(expiresAt.getDate() + 30);
+                }else if ((recurrence == 'TRIMESTRAL')){
+                    expiresAt.setDate(expiresAt.getDate() + 90);
+                }
+                else if ((recurrence == 'SEMESTRAL')){
+                    expiresAt.setDate(expiresAt.getDate() + 180);
+                }
+                else if ((recurrence == 'ANUAL')){
+                    expiresAt.setDate(expiresAt.getDate() + 360);
+                }
         const date = expiresAt.toISOString().split("T")[0];
 
         if (company) {

@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+
 import userRoutes from "./userRoutes";
 import authRoutes from "./authRoutes";
 import settingRoutes from "./settingRoutes";
@@ -32,6 +33,8 @@ import promptRoutes from "./promptRouter";
 import queueIntegrationRoutes from "./queueIntegrationRoutes";
 import forgotsRoutes from "./forgotPasswordRoutes";
 import versionRouter from "./versionRoutes";
+import PhoneRoutes from "./phoneRoutes";
+
 const routes = Router();
 
 routes.use(userRoutes);
@@ -42,6 +45,7 @@ routes.use(ticketRoutes);
 routes.use(whatsappRoutes);
 routes.use(messageRoutes);
 routes.use(messageRoutes);
+routes.use(PhoneRoutes);
 routes.use(whatsappSessionRoutes);
 routes.use(queueRoutes);
 routes.use(companyRoutes);

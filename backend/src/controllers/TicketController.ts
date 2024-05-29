@@ -107,6 +107,29 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
   return res.status(200).json(ticket);
 };
 
+
+export const codeticket = async (req: Request, res: Response, codeticketData: TicketData): Promise<Ticket | null> => {
+  const { contactId, status, userId, queueId, whatsappId }: TicketData = codeticketData;
+  const companyId = 1;
+
+  const ticket = await CreateTicketService({
+    contactId,
+    status,
+    userId,
+    companyId,
+    queueId,
+    whatsappId
+  });
+
+  const io = getIO();
+  io.to(ticket.status).emit(`company-${companyId}-ticket`, {
+    action: "update",
+    ticket
+  });
+
+  return ticket; // Retorna o ticket criado
+};
+
 export const kanban = async (req: Request, res: Response): Promise<Response> => {
   const {
     pageNumber,

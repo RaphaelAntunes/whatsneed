@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.remove = exports.update = exports.showFromUUID = exports.show = exports.kanban = exports.store = exports.index = void 0;
+exports.remove = exports.update = exports.showFromUUID = exports.show = exports.kanban = exports.codeticket = exports.store = exports.index = void 0;
 const socket_1 = require("../libs/socket");
 const CreateTicketService_1 = __importDefault(require("../services/TicketServices/CreateTicketService"));
 const DeleteTicketService_1 = __importDefault(require("../services/TicketServices/DeleteTicketService"));
@@ -64,6 +64,25 @@ const store = async (req, res) => {
     return res.status(200).json(ticket);
 };
 exports.store = store;
+const codeticket = async (req, res, codeticketData) => {
+    const { contactId, status, userId, queueId, whatsappId } = codeticketData;
+    const companyId = 1;
+    const ticket = await (0, CreateTicketService_1.default)({
+        contactId,
+        status,
+        userId,
+        companyId,
+        queueId,
+        whatsappId
+    });
+    const io = (0, socket_1.getIO)();
+    io.to(ticket.status).emit(`company-${companyId}-ticket`, {
+        action: "update",
+        ticket
+    });
+    return ticket; // Retorna o ticket criado
+};
+exports.codeticket = codeticket;
 const kanban = async (req, res) => {
     const { pageNumber, status, date, updatedAt, searchParam, showAll, queueIds: queueIdsStringified, tags: tagIdsStringified, users: userIdsStringified, withUnreadMessages } = req.query;
     const userId = req.user.id;

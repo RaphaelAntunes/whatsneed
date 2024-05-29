@@ -13,6 +13,8 @@ const ShowUserService = async (id) => {
             "name",
             "id",
             "email",
+            "phone",
+            "confirmedphone",
             "companyId",
             "profile",
             "super",
