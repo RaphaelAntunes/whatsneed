@@ -14,6 +14,8 @@ interface Request {
   companyId?: number;
   profile?: string;
   whatsappId?: number;
+  startWork?: string;
+  endWork?: string;
   allTicket?:string;
 }
 
@@ -32,6 +34,8 @@ const CreateUserService = async ({
   companyId,
   profile = "admin",
   whatsappId,
+  startWork,
+  endWork,
   allTicket
 }: Request): Promise<Response> => {
   if (companyId !== undefined) {
@@ -90,7 +94,9 @@ const CreateUserService = async ({
       companyId,
       profile,
       whatsappId: whatsappId || null,
-	  allTicket
+      startWork,
+      endWork,
+      allTicket
     },
     { include: ["queues", "company"] }
   );

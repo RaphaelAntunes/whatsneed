@@ -320,6 +320,8 @@ const messages = {
           password: "Senha",
           profile: "Perfil",
           whatsapp: "Conexão Padrão",
+          startWork: "Hora inicial",
+		  endWork: "Hora final",
 
           allTicket: "Ticket Sem Fila [Invisível]",
           allTicketEnabled: "Habilitado",
@@ -780,6 +782,8 @@ const messages = {
           email: "Email",
           profile: "Perfil",
           actions: "Ações",
+          startWork: "Horário inicial",
+          endWork: "Horário final",
         },
         buttons: {
           add: "Adicionar usuário",
@@ -961,6 +965,7 @@ const messages = {
         ERR_NO_WAPP_FOUND: "Nenhum WhatsApp encontrado com este ID.",
         ERR_CREATING_MESSAGE: "Erro ao criar mensagem no banco de dados.",
         ERR_CREATING_TICKET: "Erro ao criar tíquete no banco de dados.",
+        ERR_OUT_OF_HOURS: "Fora do Horário de Expediente!",
         ERR_FETCH_WAPP_MSG:
           "Erro ao buscar a mensagem no WhtasApp, talvez ela seja muito antiga.",
         ERR_QUEUE_COLOR_ALREADY_EXISTS:

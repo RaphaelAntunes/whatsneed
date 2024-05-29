@@ -90,7 +90,7 @@ function _renderStepContent(step, setFieldValue, setActiveStep, values ) {
       setDatePayment(data)
       actions.setSubmitting(false);
       setActiveStep(activeStep + 1);
-      toast.success("Assinatura realizada com sucesso!, aguardando a realização do pagamento");
+      toast.success("Aguardando a realização do pagamento");
     } catch (err) {
       toastError(err);
     }

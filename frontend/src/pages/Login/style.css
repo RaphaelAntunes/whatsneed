@@ -48,13 +48,15 @@ body {
 
 /* Estilos do rodapé do container de login */
 .container-footer {
+  color: white; /* Defina a cor do texto como branco */
   padding: 10px;
   text-align: center;
   margin-bottom: 10px;
 }
 
+
 .container-footer a {
-  color: black;
+  color: white;
   cursor: pointer;
 }
 

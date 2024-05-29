@@ -43,7 +43,7 @@
     "mysql2": "^2.2.5",
     "node-cache": "^5.1.2",
     "node-cron": "^3.0.2",
-    "nodemailer": "^6.8.0",
+    "nodemailer": "^6.9.13",
     "openai": "3.3.0",
     "pg": "^8.7.3",
     "pino": "^7.8.0",

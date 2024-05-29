@@ -52,12 +52,12 @@ import useTickets from "../../hooks/useTickets";
 import useUsers from "../../hooks/useUsers";
 import useContacts from "../../hooks/useContacts";
 import useMessages from "../../hooks/useMessages";
+import { ChartsDate } from "./ChartsDate";
 import { ChatsUser } from "./ChartsUser"
 
 import Filters from "./Filters";
 import { isEmpty } from "lodash";
 import moment from "moment";
-import { ChartsDate } from "./ChartsDate";
 
 const useStyles = makeStyles((theme) => ({
   container: {

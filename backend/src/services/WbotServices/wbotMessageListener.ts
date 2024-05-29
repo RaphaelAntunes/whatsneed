@@ -1111,7 +1111,7 @@ const verifyQueue = async (
     let options = "";
 
     queues.forEach((queue, index) => {
-      options += `*[ ${index + 1} ]* - ${queue.name}\n`;
+      options += `*${index + 1}* - ${queue.name}\n`;
     });
 
 
@@ -1156,7 +1156,7 @@ const verifyQueue = async (
         const endTime = moment(schedule.endTime, "HH:mm");
 
         if (now.isBefore(startTime) || now.isAfter(endTime)) {
-          const body = formatBody(`\u200e ${queue.outOfHoursMessage}\n\n*[ # ]* - Voltar ao Menu Principal`, ticket.contact);
+          const body = formatBody(`\u200e ${queue.outOfHoursMessage}\n\n*#* - Voltar ao Menu Principal`, ticket.contact);
           const sentMessage = await wbot.sendMessage(
             `${contact.number}@${ticket.isGroup ? "g.us" : "s.whatsapp.net"}`, {
             text: body,
@@ -1455,7 +1455,7 @@ const handleChartbot = async (ticket: Ticket, msg: WAMessage, wbot: Session, don
       });
       buttons.push({
         buttonId: `#`,
-        buttonText: { displayText: "Menu inicial *[ 0 ]* Menu anterior" },
+        buttonText: { displayText: "Menu inicial *0* Menu anterior" },
         type: 4
       });
 
@@ -1477,10 +1477,10 @@ const handleChartbot = async (ticket: Ticket, msg: WAMessage, wbot: Session, don
       let options = "";
 
       queueOptions.forEach((option, i) => {
-        options += `*[ ${option.option} ]* - ${option.title}\n`;
+        options += `*${option.option}* - ${option.title}\n`;
       });
-      //options += `\n*[ 0 ]* - Menu anterior`;
-      options += `\n*[ # ]* - Menu inicial`;
+      //options += `\n*0* - Menu anterior`;
+      options += `\n*#* - Menu inicial`;
 
       const textMessage = {
         text: formatBody(`\u200e${queue.greetingMessage}\n\n${options}`, ticket.contact),
@@ -1539,7 +1539,7 @@ const handleChartbot = async (ticket: Ticket, msg: WAMessage, wbot: Session, don
           });
         });
         sectionsRows.push({
-          title: "Menu inicial *[ 0 ]* Menu anterior",
+          title: "Menu inicial *0* Menu anterior",
           rowId: `#`
         });
         const sections = [
@@ -1573,7 +1573,7 @@ const handleChartbot = async (ticket: Ticket, msg: WAMessage, wbot: Session, don
         });
         buttons.push({
           buttonId: `#`,
-          buttonText: { displayText: "Menu inicial *[ 0 ]* Menu anterior" },
+          buttonText: { displayText: "Menu inicial *0* Menu anterior" },
           type: 4
         });
 
@@ -1596,10 +1596,10 @@ const handleChartbot = async (ticket: Ticket, msg: WAMessage, wbot: Session, don
         let options = "";
 
         queueOptions.forEach((option, i) => {
-          options += `*[ ${option.option} ]* - ${option.title}\n`;
+          options += `*${option.option}* - ${option.title}\n`;
         });
-        options += `\n*[ 0 ]* - Menu anterior`;
-        options += `\n*[ # ]* - Menu inicial`;
+        options += `\n*0* - Menu anterior`;
+        options += `\n*#* - Menu inicial`;
         const textMessage = {
           text: formatBody(`\u200e${currentOption.message}\n\n${options}`, ticket.contact),
         };
@@ -2259,6 +2259,28 @@ const filterMessages = (msg: WAMessage): boolean => {
 
 const wbotMessageListener = async (wbot: Session, companyId: number): Promise<void> => {
   try {
+     // wbot.ev.on('messaging-history.set', async ({ isLatest, messages }) => {
+ // try {
+    // Define um intervalo de atraso entre as chamadas para a API (em milissegundos)
+   // const delayBetweenRequests = 1000; // 1 segundo
+
+    // Processa todas as mensagens, independentemente de serem as mais recentes ou não
+  //  for (const message of messages) {
+      // Lida com cada mensagem de forma assíncrona, mas sequencialmente
+    //  await handleMessage(message, wbot, companyId);
+  //    await verifyRecentCampaign(message, companyId);
+   //   await verifyCampaignMessageAndCloseTicket(message, companyId);
+
+      // Aguarda o intervalo de atraso antes de continuar para a próxima mensagem
+      //await new Promise(resolve => setTimeout(resolve, delayBetweenRequests));
+  //  }
+//  } catch (error) {
+    // Captura qualquer erro e registra
+  //  Sentry.captureException(error);
+   // logger.error(`Erro ao lidar com o histórico de mensagens: ${error}`);
+ // }
+//});
+      
     wbot.ev.on("messages.upsert", async (messageUpsert: ImessageUpsert) => {
       const messages = messageUpsert.messages
         .filter(filterMessages)

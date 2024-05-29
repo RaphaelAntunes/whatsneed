@@ -237,15 +237,20 @@ const Users = () => {
         <Table size="small">
           <TableHead>
             <TableRow>
-			<TableCell align="center">
-                {i18n.t("users.table.id")}
+            <TableCell align="center">
+                {i18n.t("users.table.name")}
               </TableCell>
-              <TableCell align="center">{i18n.t("users.table.name")}</TableCell>
               <TableCell align="center">
                 {i18n.t("users.table.email")}
               </TableCell>
               <TableCell align="center">
                 {i18n.t("users.table.profile")}
+              </TableCell>
+              <TableCell align="center">
+                {i18n.t("users.table.startWork")}
+              </TableCell>
+              <TableCell align="center">
+                {i18n.t("users.table.endWork")}
               </TableCell>
               <TableCell align="center">
                 {i18n.t("users.table.actions")}
@@ -256,10 +261,11 @@ const Users = () => {
             <>
               {users.map((user) => (
                 <TableRow key={user.id}>
-				  <TableCell align="center">{user.id}</TableCell>
                   <TableCell align="center">{user.name}</TableCell>
                   <TableCell align="center">{user.email}</TableCell>
                   <TableCell align="center">{user.profile}</TableCell>
+                  <TableCell align="center">{user.startWork}</TableCell>
+                  <TableCell align="center">{user.endWork}</TableCell>
                   <TableCell align="center">
                     <IconButton
                       size="small"
@@ -280,7 +286,7 @@ const Users = () => {
                   </TableCell>
                 </TableRow>
               ))}
-              {loading && <TableRowSkeleton columns={4} />}
+              {loading && <TableRowSkeleton columns={6} />}
             </>
           </TableBody>
         </Table>

@@ -17,7 +17,7 @@ import logo from "../../assets/logo.png";
 
 const Copyright = () => {
   return (
-    <Typography variant="body2" color="primary" align="center">
+    <Typography variant="body2" color="primary" align="center" style={{ color: 'white' }}>
       {"Copyright "}
       <Link color="primary" href="#">
         PLW
@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
+    copyright: {
+    color: 'white',
+    }
   },
 
   paper: {

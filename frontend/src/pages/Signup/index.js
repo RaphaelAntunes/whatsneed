@@ -65,7 +65,7 @@ const handleNewUserMessage = (newMessage) => {
   );
 };
 
-const validCodes = ["PROMOWN", "OTHER_CODE", "ANOTHER_CODE", "YET_ANOTHER_CODE"];
+const validCodes = ["PROMOWN", "NEED84", "WN100"];
 
 const UserSchema = Yup.object().shape({
   name: Yup.string()
@@ -99,7 +99,7 @@ const SignUp = () => {
   const [validationCode, setValidationCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const dueDate = moment().add(7, "day").format();
+  const dueDate = moment().add(3, "day").format();
   const [plans, setPlans] = useState([]);
 
 
@@ -188,7 +188,7 @@ const SignUp = () => {
           </h4>
           <div>
             <span className="span" style={{ fontSize: "17px" }}>
-              Comece seu <b>teste GRATUITO</b> de 7 dias do CRM da WhatsNeed!{" "}
+              Comece seu <b>teste GRATUITO</b> de 3 dias do CRM da WhatsNeed!{" "}
             </span>
           </div>
 

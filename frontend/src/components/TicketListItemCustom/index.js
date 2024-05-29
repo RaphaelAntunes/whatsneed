@@ -394,7 +394,7 @@ const useStyles = makeStyles((theme) => ({
             :
             <Avatar
               style={{
-                marginTop: "-30px",
+                marginTop: "0px",
                 marginLeft: "0px",
                 width: "50px",
                 height: "50px",
