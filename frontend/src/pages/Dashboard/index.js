@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 import Paper from "@material-ui/core/Paper";
 import Container from "@material-ui/core/Container";
@@ -193,6 +194,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const Dashboard = () => {
+  const history = useHistory();
   const classes = useStyles();
   const [counters, setCounters] = useState({});
   const [attendants, setAttendants] = useState([]);
@@ -220,9 +222,13 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
+    if(user.confirmedphone != "true"){
+      history.push("/phone");
+
+    }  
     async function firstLoad() {
       await fetchData();
-    }
+       }
     setTimeout(() => {
       firstLoad();
     }, 1000);
