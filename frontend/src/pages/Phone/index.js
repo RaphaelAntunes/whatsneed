@@ -68,7 +68,7 @@ const Helps = () => {
   const [code, setCode] = useState('');
   const { user } = useContext(AuthContext);
   const history = useHistory();
-  const backendUrl = process.env.BACKEND_URL; // Aqui estamos definindo a URL padrão como localhost, caso a variável de ambiente não esteja definida
+  const backendUrl = process.env.REACT_APP_BACKEND_URL; // Aqui estamos definindo a URL padrão como localhost, caso a variável de ambiente não esteja definida
 
   useEffect(() => {
 
