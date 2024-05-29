@@ -68,6 +68,7 @@ const Helps = () => {
   const [code, setCode] = useState('');
   const { user } = useContext(AuthContext);
   const history = useHistory();
+  const backendUrl = process.env.BACKEND_URL; // Aqui estamos definindo a URL padrão como localhost, caso a variável de ambiente não esteja definida
 
   useEffect(() => {
 
@@ -91,7 +92,7 @@ const Helps = () => {
     var request = require('request');
     var options = {
       'method': 'POST',
-      'url': 'http://localhost:8090/codecontact',
+      'url': `${backendUrl}/codecontact`,
       'headers': {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
@@ -136,7 +137,7 @@ const Helps = () => {
     var request = require('request');
     var options = {
       'method': 'POST',
-      'url': 'http://localhost:8090/confirmcode',
+      'url': `${backendUrl}/confirmcode`,
       'headers': {
         'Content-Type': 'application/json',
       },
