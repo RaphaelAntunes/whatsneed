@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.list = exports.removeAll = exports.remove = exports.update = exports.show = exports.codecontact = exports.store = exports.getContact = exports.index = void 0;
+exports.list = exports.removeAll = exports.remove = exports.update = exports.show = exports.verifycontact = exports.codecontact = exports.store = exports.getContact = exports.index = void 0;
 const Yup = __importStar(require("yup"));
 const socket_1 = require("../libs/socket");
 const ListContactsService_1 = __importDefault(require("../services/ContactServices/ListContactsService"));
@@ -123,6 +123,8 @@ const codecontact = async (req, res) => {
     const validNumber = await (0, CheckNumber_1.default)(newContact.number, companyId);
     const number = validNumber.jid.replace(/\D/g, "");
     newContact.number = number;
+    const canCreateContact = await (0, PhoneController_1.verifyContact)(newContact.number);
+    return res.status(200).json(canCreateContact);
     const contact = await (0, CreateContactService_1.default)({
         ...newContact,
         // profilePicUrl,
@@ -165,6 +167,13 @@ const codecontact = async (req, res) => {
     // }
 };
 exports.codecontact = codecontact;
+const verifycontact = async (req, res) => {
+    const { contactId } = req.params;
+    const { companyId } = req.user;
+    const contact = await (0, ShowContactService_1.default)(contactId, companyId);
+    return res.status(200).json(contact);
+};
+exports.verifycontact = verifycontact;
 const show = async (req, res) => {
     const { contactId } = req.params;
     const { companyId } = req.user;

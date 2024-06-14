@@ -61,35 +61,37 @@ interface ConfirmCodeResult {
   message?: string;
 }
 
+
+
 const ConfirmCode = async (userId: number, code: string): Promise<ConfirmCodeResult> => {
   try {
     const user = await User.findByPk(userId);
     if (user) {
       if (user.confirmedphone === 'true') {
-        return { status: 201,message: 'Essa conta já foi confirmada anteriormente' };
+        return { status: 201, message: 'Essa conta já foi confirmada anteriormente' };
       }
 
-      if(user.confirmedphone == null || user.confirmedphone == ''){
-        return { status: 500,message: 'Não foi possível confirmar o código, entre em contato com um administrador' };
+      if (user.confirmedphone == null || user.confirmedphone == '') {
+        return { status: 500, message: 'Não foi possível confirmar o código, entre em contato com um administrador' };
       }
 
       if (user.confirmedphone && user.confirmedphone.length === 6) {
-        
-          if(user.confirmedphone == code){
 
-            user.confirmedphone = 'true';
-            user.save();
-            
-            return { status: 200,message: 'Telefone vinculado com sucesso' };
+        if (user.confirmedphone == code) {
 
-          }else{
-            return { status: 300,message: 'Código incorreto'};
-          }
+          user.confirmedphone = 'true';
+          user.save();
+
+          return { status: 200, message: 'Telefone vinculado com sucesso' };
+
+        } else {
+          return { status: 300, message: 'Código incorreto' };
+        }
 
       }
-     
+
     } else {
-      return { status: 404,message: 'Usuário não encontrado' };
+      return { status: 404, message: 'Usuário não encontrado' };
     }
   } catch (error) {
     throw new Error('Erro ao definir token');
@@ -118,3 +120,19 @@ const setPhone = async (userId: number, phone: string): Promise<User | null> => 
 
 export { setPhone };
 
+
+const verifyContact = async (phone: string): Promise<User | null> => {
+  try {
+
+    const numberExists = await User.findOne({
+      where: { phone }
+    });
+
+    return numberExists;
+
+  } catch (error) {
+    throw new Error('Erroxxx');
+  }
+};
+
+export { verifyContact };

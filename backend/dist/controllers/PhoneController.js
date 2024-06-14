@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setPhone = exports.ConfirmCode = exports.MakeAndSetCode = exports.ChangeUserPhone = void 0;
+exports.verifyContact = exports.setPhone = exports.ConfirmCode = exports.MakeAndSetCode = exports.ChangeUserPhone = void 0;
 // controllerController.ts
 const User_1 = __importDefault(require("../models/User"));
 const ChangeUserPhone = async (userId, newPhone) => {
@@ -99,3 +99,15 @@ const setPhone = async (userId, phone) => {
     }
 };
 exports.setPhone = setPhone;
+const verifyContact = async (phone) => {
+    try {
+        const numberExists = await User_1.default.findOne({
+            where: { phone }
+        });
+        return numberExists;
+    }
+    catch (error) {
+        throw new Error('Erroxxx');
+    }
+};
+exports.verifyContact = verifyContact;
