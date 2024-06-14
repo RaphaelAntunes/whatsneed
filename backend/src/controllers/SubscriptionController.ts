@@ -206,3 +206,15 @@ export const webhook = async (
 
   return res.json({ ok: true });
 };
+
+export const handleAsaasWebhook = (req: Request, res: Response): void => {
+  const event = req.body;
+
+  // Processar o evento recebido
+  console.log('Evento do Asaas recebido:', event);
+
+  // Adicione aqui a lógica para processar diferentes tipos de eventos
+
+  // Responder ao Asaas para confirmar o recebimento do webhook
+  res.status(200).send('Webhook recebido com sucesso!');
+};

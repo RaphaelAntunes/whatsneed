@@ -124,7 +124,24 @@ const codecontact = async (req, res) => {
     const number = validNumber.jid.replace(/\D/g, "");
     newContact.number = number;
     const canCreateContact = await (0, PhoneController_1.verifyContact)(newContact.number);
-    return res.status(200).json(canCreateContact);
+    if (canCreateContact) {
+        if (canCreateContact.confirmedphone != "true") {
+            const { contacts, count, hasMore } = await (0, ListContactsService_1.default)({ companyId });
+            const contact = contacts.find(c => c.number === newContact.number);
+            const contactid = String(contact.id);
+            if (contact) {
+                await (0, DeleteContactService_1.default)(contactid);
+                const io = (0, socket_1.getIO)();
+                io.emit(`company-${companyId}-contact`, {
+                    action: "delete",
+                    contactid
+                });
+            }
+        }
+        else {
+            return res.status(200).json('OTHER_ACCOUNT_NUMBER');
+        }
+    }
     const contact = await (0, CreateContactService_1.default)({
         ...newContact,
         // profilePicUrl,

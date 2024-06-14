@@ -34,6 +34,7 @@ import queueIntegrationRoutes from "./queueIntegrationRoutes";
 import forgotsRoutes from "./forgotPasswordRoutes";
 import versionRouter from "./versionRoutes";
 import PhoneRoutes from "./phoneRoutes";
+import CustomersRoutes from "./CustomersRoutes";
 
 const routes = Router();
 
@@ -46,6 +47,7 @@ routes.use(whatsappRoutes);
 routes.use(messageRoutes);
 routes.use(messageRoutes);
 routes.use(PhoneRoutes);
+routes.use(CustomersRoutes);
 routes.use(whatsappSessionRoutes);
 routes.use(queueRoutes);
 routes.use(companyRoutes);
