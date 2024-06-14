@@ -107,6 +107,7 @@ const Helps = () => {
     request(options, function (error, response,body) {
       const responseBody = JSON.parse(body);
 
+      console.log(responseBody);
       if (error) {
         console.error('Erro ao enviar solicitação:', error);
         return;
@@ -116,6 +117,10 @@ const Helps = () => {
         if(responseBody == "SEND_CODE"){
           toast.success('Código enviado com sucesso !');
           setShowPhoneCard(false);
+        }
+
+        if(responseBody == "OTHER_ACCOUNT_NUMBER"){
+          toastError("Numero cadastrado em outra conta");
         }
 
       } else {

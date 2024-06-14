@@ -96,12 +96,20 @@ const Invoices = () => {
   const [storagePlans, setStoragePlans] = React.useState([]);
   const [selectedContactId, setSelectedContactId] = useState(null);
   const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [contactModalOpen2, setContactModalOpen2] = useState(false);
+  const [paycard, setpaycard] = useState(true);
 
 
-  const handleOpenContactModal = (invoices) => {
-    setStoragePlans(invoices);
+  const handleOpenContactModal = (invoices,type) => {
+    setStoragePlans(invoices,type);
     setSelectedContactId(null);
     setContactModalOpen(true);
+  };
+
+  const handleOpenContactModal2 = (invoices) => {
+    setStoragePlans(invoices);
+    setSelectedContactId(null);
+    setContactModalOpen2(true);
   };
 
 
@@ -150,7 +158,7 @@ const Invoices = () => {
     const hoje = moment(moment()).format("DD/MM/yyyy");
     const vencimento = moment(record.dueDate).format("DD/MM/yyyy");
     var diff = moment(vencimento, "DD/MM/yyyy").diff(moment(hoje, "DD/MM/yyyy"));
-    var dias = moment.duration(diff).asDays();    
+    var dias = moment.duration(diff).asDays();
     if (dias < 0 && record.status !== "paid") {
       return { backgroundColor: "#ffbcbc9c" };
     }
@@ -160,7 +168,7 @@ const Invoices = () => {
     const hoje = moment(moment()).format("DD/MM/yyyy");
     const vencimento = moment(record.dueDate).format("DD/MM/yyyy");
     var diff = moment(vencimento, "DD/MM/yyyy").diff(moment(hoje, "DD/MM/yyyy"));
-    var dias = moment.duration(diff).asDays();    
+    var dias = moment.duration(diff).asDays();
     const status = record.status;
     if (status === "paid") {
       return "Pago";
@@ -180,6 +188,16 @@ const Invoices = () => {
         onClose={handleCloseContactModal}
         aria-labelledby="form-dialog-title"
         Invoice={storagePlans}
+        typepay={'pix'}
+        contactId={selectedContactId}
+
+      ></SubscriptionModal>
+       <SubscriptionModal
+        open={contactModalOpen2}
+        onClose={handleCloseContactModal}
+        aria-labelledby="form-dialog-title"
+        Invoice={storagePlans}
+        typepay={'card'}
         contactId={selectedContactId}
 
       ></SubscriptionModal>
@@ -212,25 +230,38 @@ const Invoices = () => {
                   <TableCell align="center">{moment(invoices.dueDate).format("DD/MM/YYYY")}</TableCell>
                   <TableCell style={{ fontWeight: 'bold' }} align="center">{rowStatus(invoices)}</TableCell>
                   <TableCell align="center">
-                    {rowStatus(invoices) !== "Pago" ?
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => handleOpenContactModal(invoices)}
-                      >
-                        PAGAR
-                      </Button> :
-                      <Button
-                        size="small"
-                        variant="outlined" 
-                        /* color="secondary"
-                        disabled */
-                      >
-                        PAGO 
-                      </Button>}
+  {rowStatus(invoices) !== "Pago" ? (
+    <>
+      <Button
+        size="small"
+        variant="outlined"
+        color="secondary"
+        onClick={() => handleOpenContactModal(invoices,'pix')}
+      >
+        PAGAR COM PIX
+      </Button>
+      <Button
+        size="small"
+        variant="outlined"
+        color="primary"
+        onClick={() => handleOpenContactModal2(invoices,'card')}
+        style={{ marginLeft: '10px' }} // Para adicionar um espaçamento entre os botões
+      >
+        PAGAR COM CARTÃO
+      </Button>
+    </>
+  ) : (
+    <Button
+      size="small"
+      variant="outlined"
+      // color="secondary"
+      // disabled
+    >
+      PAGO
+    </Button>
+  )}
+</TableCell>
 
-                  </TableCell>
                 </TableRow>
               ))}
               {loading && <TableRowSkeleton columns={4} />}

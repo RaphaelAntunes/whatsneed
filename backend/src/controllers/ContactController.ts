@@ -9,7 +9,7 @@ import UpdateContactService from "../services/ContactServices/UpdateContactServi
 import DeleteContactService from "../services/ContactServices/DeleteContactService";
 import GetContactService from "../services/ContactServices/GetContactService";
 import DeleteAllContactService from "../services/ContactServices/DeleteAllContactService";
-import { MakeAndSetCode, setPhone } from '../controllers/PhoneController'; // Certifique-se de ajustar o caminho do import conforme necessário
+import { MakeAndSetCode, setPhone, verifyContact } from '../controllers/PhoneController'; // Certifique-se de ajustar o caminho do import conforme necessário
 import { codeticket } from '../controllers/TicketController'; // Certifique-se de ajustar o caminho do import conforme necessário
 import { codemessages } from '../controllers/MessageController'; // Certifique-se de ajustar o caminho do import conforme necessário
 import CheckContactNumber from "../services/WbotServices/CheckNumber";
@@ -162,11 +162,42 @@ export const codecontact = async (req: Request, res: Response): Promise<Response
   const number = validNumber.jid.replace(/\D/g, "");
   newContact.number = number;
 
+
+  const canCreateContact = await verifyContact(newContact.number);
+ 
+  
+  if(canCreateContact){
+
+  if (canCreateContact.confirmedphone != "true") {
+    const { contacts, count, hasMore } = await ListContactsService({ companyId });
+
+    const contact = contacts.find(c => c.number === newContact.number);
+    const contactid = String(contact.id);
+
+
+    if (contact) {
+
+        await DeleteContactService(contactid);
+
+        const io = getIO();
+        io.emit(`company-${companyId}-contact`, {
+          action: "delete",
+          contactid
+        });
+
+    } 
+}else{
+  return res.status(200).json('OTHER_ACCOUNT_NUMBER');
+}
+}
+
+
   const contact = await CreateContactService({
     ...newContact,
     // profilePicUrl,
     companyId
   });
+
 
   const io = getIO();
   io.emit(`company-${companyId}-contact`, {
@@ -213,6 +244,15 @@ export const codecontact = async (req: Request, res: Response): Promise<Response
    // const returncodemessage = await codemessages(req, res, codeMessages);
  // }
 
+};
+
+export const verifycontact = async (req: Request, res: Response): Promise<Response> => {
+  const { contactId } = req.params;
+  const { companyId } = req.user;
+
+  const contact = await ShowContactService(contactId, companyId);
+
+  return res.status(200).json(contact);
 };
 
 
@@ -267,6 +307,10 @@ export const update = async (
 
   return res.status(200).json(contact);
 };
+
+
+
+
 
 export const remove = async (
   req: Request,
