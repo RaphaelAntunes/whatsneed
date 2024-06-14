@@ -24,23 +24,158 @@ import checkoutFormModel from "./FormModel/checkoutFormModel";
 import formInitialValues from "./FormModel/formInitialValues";
 
 import useStyles from "./styles";
-import Invoices from "../../pages/Financeiro";
+
+const backendUrl = "http://localhost:8090"; // Replace with your actual backend URL
 
 export default function CheckoutPage(props) {
+  console.log(props);
   const steps = ["Dados", "Personalizar", "Revisar"];
   const { formId, formField } = checkoutFormModel;
-
+  const planovalor = props.Invoice.value;
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(1);
   const [datePayment, setDatePayment] = useState(null);
-  const [invoiceId, setinvoiceId] = useState(props.Invoice.id);
-  const [typepay, settypepay] = useState(props.typepay);
+  const [paylink, setpaylink] = useState(null);
+  const [linkpay, setlinkpay] = useState(null);
+
+  const [invoiceId, setInvoiceId] = useState(props.Invoice.id);
+  const [typepay, setTypepay] = useState(props.typepay);
+  const { user } = useContext(AuthContext);
+
 
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;
-  const { user } = useContext(AuthContext);
 
-  console.log(typepay);
+  async function _submitForm(values, actions) {
+    try {
+      const plan = JSON.parse(values.plan);
+      const newValues = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        address2: values.address2,
+        city: values.city,
+        state: values.state,
+        zipcode: values.zipcode,
+        country: values.country,
+        useAddressForPaymentDetails: values.useAddressForPaymentDetails,
+        nameOnCard: values.nameOnCard,
+        cardNumber: values.cardNumber,
+        cvv: values.cvv,
+        plan: values.plan,
+        price: plan.price,
+        users: plan.users,
+        connections: plan.connections,
+        invoiceId: invoiceId,
+      };
+      const { data } = await api.post("/subscription", newValues);
+      setDatePayment(data);
+      actions.setSubmitting(false);
+      setActiveStep(activeStep + 1);
+      toast.success("Assinatura realizada com sucesso! Aguardando o pagamento.");
+    } catch (err) {
+      toastError(err);
+    }
+  }
+
+  async function _handleSubmit(values, actions) {
+
+    if (isLastStep) {
+      // VERIFICA SE O PAGAMENTO É FEITO EM CARTÃO E SE O USUARIO JÁ POSSUI UMA CADASTRO NO ASSAS
+      if (typepay === 'card') {
+        if (user.customer_id === null) {
+          try {
+            // NAO TEM CADASTRO, CRIANDO UM
+            const options = {
+              method: 'POST',
+              headers: {
+                accept: 'application/json',
+                'content-type': 'application/json',
+                access_token: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ=='
+              },
+              body: JSON.stringify({ name: user.name, cpfCnpj: '21620615037' })
+            };
+            // FETCH
+
+            const rescadastro = await fetch('http://localhost:8080/https://sandbox.asaas.com/api/v3/customers', options);
+            const data = await rescadastro.json();
+            const customer_id = data.id;
+            // VERIFICA SE FOI FEITO COM SUCESSO
+            if (rescadastro.status == 200) {
+              // SALVA O COSTUMER_ID NO BANCO
+              const requestOptions = {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json, text/plain, */*',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  "user_id": user.id,
+                  "code": customer_id,
+                })
+              };
+              //FETCH
+              const result = await fetch(`${backendUrl}/setCustomer`, requestOptions);
+              const responseBody = await result.json();
+
+              if (result.status == 200) {
+                // PEGA DATA DE HOJE E ADICIONA 30 DIAS
+                const today = new Date();
+                const dueDate = new Date(today.setDate(today.getDate() + 30));
+                // CRIA PAGAMENTO
+                const options = {
+                  method: 'POST',
+                  headers: {
+                    accept: 'application/json',
+                    'content-type': 'application/json',
+                    access_token: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ=='
+                  },
+                  body: JSON.stringify({
+                    billingType: 'CREDIT_CARD',
+                    customer: customer_id,
+                    value: planovalor,
+                    dueDate: dueDate.toISOString().split('T')[0] // Formata a data de vencimento para 'yyyy-mm-dd'
+                  })
+                };
+
+                const create_paymento = await fetch('http://localhost:8080/http://localhost:8080/https://sandbox.asaas.com/api/v3/payments', options);
+                const payment_data = await create_paymento.json();
+                console.log(payment_data);
+                // DEFINE QUE O BOTÃO DEVE FATURA DEVE APARECER
+                setpaylink(true);
+                // DEFINE O LINK DO PAGAMENTO
+                setlinkpay(payment_data.invoiceUrl);
+                // ABRE O PAGAMENTO
+                window.open(payment_data.invoiceUrl, '_blank'); // '_blank' abre a URL em uma nova guia
+                /// MENSAGEM
+                toast.success("Sua fatura já está diponível !");
+
+              }
+            }
+
+          } catch (err) {
+            console.error(err);
+          }
+        } else {
+
+        }
+      } else {
+        _submitForm(values, actions);
+      }
+    } else {
+      setActiveStep(activeStep + 1);
+      actions.setTouched({});
+      actions.setSubmitting(false);
+    }
+  }
+
+  function _handleBack() {
+    setActiveStep(activeStep - 1);
+  }
+  async function _handleOpenLink() {
+
+    window.open(linkpay, '_blank'); // '_blank' abre a URL em uma nova guia
+
+  }
   function _renderStepContent(step, setFieldValue, setActiveStep, values) {
     switch (step) {
       case 0:
@@ -67,75 +202,6 @@ export default function CheckoutPage(props) {
       default:
         return <div>Not Found</div>;
     }
-  }
-
-  async function _submitForm(values, actions) {
-    try {
-      const plan = JSON.parse(values.plan);
-      const newValues = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        address2: values.address2,
-        city: values.city,
-        state: values.state,
-        zipcode: values.zipcode,
-        country: values.country,
-        useAddressForPaymentDetails: values.useAddressForPaymentDetails,
-        nameOnCard: values.nameOnCard,
-        cardNumber: values.cardNumber,
-        cvv: values.cvv,
-        plan: values.plan,
-        price: plan.price,
-        users: plan.users,
-        connections: plan.connections,
-        invoiceId: invoiceId,
-      };
-
-      const { data } = await api.post("/subscription", newValues);
-      setDatePayment(data);
-      actions.setSubmitting(false);
-      setActiveStep(activeStep + 1);
-      toast.success(
-        "Assinatura realizada com sucesso!, aguardando a realização do pagamento"
-      );
-    } catch (err) {
-      toastError(err);
-    }
-  }
-
-  function _handleSubmit(values, actions) {
-    if (isLastStep) {
-      if (typepay == 'card') {
-        
-        const options = {
-          method: 'POST',
-          headers: {
-            accept: 'application/json',
-            access_token: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ==',
-
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({ name: 'abc', cpfCnpj: '21620615037' })
-        };
-
-        fetch('https://sandbox.asaas.com/api/v3/customers', options)
-          .then(response => response.json())
-          .then(response => console.log(response))
-          .catch(err => console.error(err));
-
-
-      } else {
-        _submitForm(values, actions);
-      }
-    } else {
-      setActiveStep(activeStep + 1);
-      actions.setTouched({});
-      actions.setSubmitting(false);
-    }
-  }
-
-  function _handleBack() {
-    setActiveStep(activeStep - 1);
   }
 
   return (
@@ -178,7 +244,7 @@ export default function CheckoutPage(props) {
                     </Button>
                   )}
                   <div className={classes.wrapper}>
-                    {activeStep !== 1 && (
+                    {activeStep !== 1 && !paylink && (
                       <Button
                         disabled={isSubmitting}
                         type="submit"
@@ -195,6 +261,17 @@ export default function CheckoutPage(props) {
                         className={classes.buttonProgress}
                       />
                     )}
+                    {paylink && (
+                      <Button
+                        onClick={_handleOpenLink}
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                      >
+                        VER FATURA
+                      </Button>
+                    )}
+
                   </div>
                 </div>
               </Form>

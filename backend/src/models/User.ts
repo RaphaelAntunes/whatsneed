@@ -41,6 +41,9 @@ class User extends Model<User> {
 
   @Column
   confirmedphone: string;
+
+  @Column
+  customer_id: string;
   
   @Column
   allTicket: string;
