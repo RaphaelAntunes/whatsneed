@@ -7,7 +7,6 @@ function PaymentDetails(props) {
   const classes = useStyles();
   const { plan } = formValues;
   const newPlan = JSON.parse(plan);
-  console.log(newPlan);
 
 
    const renderPlansTime = (newPlan) => {
