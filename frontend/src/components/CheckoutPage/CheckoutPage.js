@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect} from "react";
 import {
   Stepper,
   Step,
@@ -8,6 +8,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { Formik, Form } from "formik";
+import { useHistory } from "react-router-dom";
 
 import AddressForm from "./Forms/AddressForm";
 import PaymentForm from "./Forms/PaymentForm";
@@ -18,6 +19,8 @@ import api from "../../services/api";
 import toastError from "../../errors/toastError";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context/Auth/AuthContext";
+import { socketConnection } from "../../services/socket";
+import { useDate } from "../../hooks/useDate";
 
 import validationSchema from "./FormModel/validationSchema";
 import checkoutFormModel from "./FormModel/checkoutFormModel";
@@ -25,10 +28,8 @@ import formInitialValues from "./FormModel/formInitialValues";
 
 import useStyles from "./styles";
 
-const backendUrl = "http://localhost:8090"; // Replace with your actual backend URL
 
 export default function CheckoutPage(props) {
-  console.log(props);
   const steps = ["Dados", "Personalizar", "Revisar"];
   const { formId, formField } = checkoutFormModel;
   const planovalor = props.Invoice.value;
@@ -41,11 +42,28 @@ export default function CheckoutPage(props) {
   const [invoiceId, setInvoiceId] = useState(props.Invoice.id);
   const [typepay, setTypepay] = useState(props.typepay);
   const { user } = useContext(AuthContext);
+  const history = useHistory();
+  const { dateToClient } = useDate();
+  const corsURL = process.env.REACT_APP_BACKEND_CORS_URL; 
 
+  useEffect(() => {
+    const companyId = localStorage.getItem("companyId");
+    const socket = socketConnection({ companyId });
 
+    socket.on(`company-${companyId}-payment`, (data) => {
+
+      if (data.action === "CONFIRMED") {
+        toast.success(`Sua licença foi renovada até ${dateToClient(data.company.dueDate)}!`);
+        setTimeout(() => {
+          history.push("/");
+        }, 4000);
+      }
+    });
+  }, [history]);
+ 
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;
-
+  console.log(corsURL);
   async function _submitForm(values, actions) {
     try {
       const plan = JSON.parse(values.plan);
@@ -96,7 +114,7 @@ export default function CheckoutPage(props) {
             };
             // FETCH
 
-            const rescadastro = await fetch('http://localhost:8080/https://sandbox.asaas.com/api/v3/customers', options);
+            const rescadastro = await fetch(`${corsURL}/https://sandbox.asaas.com/api/v3/customers`, options);
             const data = await rescadastro.json();
             const customer_id = data.id;
             // VERIFICA SE FOI FEITO COM SUCESSO
@@ -114,7 +132,7 @@ export default function CheckoutPage(props) {
                 })
               };
               //FETCH
-              const result = await fetch(`${backendUrl}/setCustomer`, requestOptions);
+              const result = await fetch(`${process.env.REACT_APP_BACKEND_URL}/setCustomer`, requestOptions);
               const responseBody = await result.json();
 
               if (result.status == 200) {
@@ -137,7 +155,7 @@ export default function CheckoutPage(props) {
                   })
                 };
 
-                const create_paymento = await fetch('http://localhost:8080/http://localhost:8080/https://sandbox.asaas.com/api/v3/payments', options);
+                const create_paymento = await fetch(`${corsURL}/https://sandbox.asaas.com/api/v3/payments`, options);
                 const payment_data = await create_paymento.json();
                 console.log(payment_data);
                 // DEFINE QUE O BOTÃO DEVE FATURA DEVE APARECER
@@ -207,7 +225,7 @@ export default function CheckoutPage(props) {
   return (
     <React.Fragment>
       <Typography component="h1" variant="h4" align="center">
-        Falta pouco!
+        Falta pouco! 
       </Typography>
       <Stepper activeStep={activeStep} className={classes.stepper}>
         {steps.map((label) => (
