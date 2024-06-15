@@ -45,7 +45,7 @@ export default function CheckoutPage(props) {
   const history = useHistory();
   const { dateToClient } = useDate();
   const corsURL = process.env.REACT_APP_BACKEND_CORS_URL; 
-  const assaskey = process.env.ASAAS_KEY; 
+  const assaskey = '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ=='; 
 
   useEffect(() => {
     const companyId = localStorage.getItem("companyId");
@@ -65,6 +65,8 @@ export default function CheckoutPage(props) {
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;
   console.log(corsURL);
+  console.log(assaskey);
+
   async function _submitForm(values, actions) {
     try {
       const plan = JSON.parse(values.plan);
