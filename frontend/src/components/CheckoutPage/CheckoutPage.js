@@ -45,6 +45,7 @@ export default function CheckoutPage(props) {
   const history = useHistory();
   const { dateToClient } = useDate();
   const corsURL = process.env.REACT_APP_BACKEND_CORS_URL; 
+  const assaskey = '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ=='; 
 
   useEffect(() => {
     const companyId = localStorage.getItem("companyId");
@@ -64,6 +65,8 @@ export default function CheckoutPage(props) {
   const currentValidationSchema = validationSchema[activeStep];
   const isLastStep = activeStep === steps.length - 1;
   console.log(corsURL);
+  console.log(assaskey);
+
   async function _submitForm(values, actions) {
     try {
       const plan = JSON.parse(values.plan);
@@ -108,7 +111,7 @@ export default function CheckoutPage(props) {
               headers: {
                 accept: 'application/json',
                 'content-type': 'application/json',
-                access_token: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ=='
+                access_token: assaskey
               },
               body: JSON.stringify({ name: user.name, cpfCnpj: '21620615037' })
             };
@@ -145,7 +148,7 @@ export default function CheckoutPage(props) {
                   headers: {
                     accept: 'application/json',
                     'content-type': 'application/json',
-                    access_token: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ=='
+                    access_token: assaskey
                   },
                   body: JSON.stringify({
                     billingType: 'CREDIT_CARD',
@@ -174,8 +177,34 @@ export default function CheckoutPage(props) {
             console.error(err);
           }
         } else {
-
-        }
+          const options = {
+            method: 'GET',
+            headers: {
+              accept: 'application/json',
+              access_token: assaskey
+            }
+          };
+          
+          fetch(`${corsURL}/https://sandbox.asaas.com/api/v3/payments?customer=${user.customer_id}`, options)
+            .then(response => response.json())
+            .then(data => {
+              const payments = data.data; // Array de pagamentos
+              if (payments.length > 0) {
+                const lastPayment = payments[payments.length - 1]; // Último pagamento da lista
+                if (lastPayment.status === 'PENDING') {
+                  const linkcpay = lastPayment.invoiceUrl;
+                  setpaylink(true);
+                // DEFINE O LINK DO PAGAMENTO
+                setlinkpay(linkcpay);
+                // ABRE O PAGAMENTO
+                window.open(linkcpay, '_blank'); // '_blank' abre a URL em uma nova guia
+                /// MENSAGEM
+                toast.success("Sua fatura já está diponível !");
+                } 
+              } 
+            })
+            .catch(err => console.error('Erro ao buscar pagamentos:', err));
+          }
       } else {
         _submitForm(values, actions);
       }
@@ -279,7 +308,7 @@ export default function CheckoutPage(props) {
                         className={classes.buttonProgress}
                       />
                     )}
-                    {paylink && (
+                    {paylink && isLastStep && (
                       <Button
                         onClick={_handleOpenLink}
                         variant="contained"
