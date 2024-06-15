@@ -24,9 +24,9 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
 export const createSubscription = async (
   req: Request,
   res: Response
-  ): Promise<Response> => {
-    const gerencianet = Gerencianet(options);
-    const { companyId } = req.user;
+): Promise<Response> => {
+  const gerencianet = Gerencianet(options);
+  const { companyId } = req.user;
 
   const schema = Yup.object().shape({
     price: Yup.string().required(),
@@ -61,7 +61,7 @@ export const createSubscription = async (
     },
     chave: process.env.GERENCIANET_PIX_KEY,
     solicitacaoPagador: `#Fatura:${invoiceId}`
-    };
+  };
   try {
     const pix = await gerencianet.pixCreateImmediateCharge(null, body);
 
@@ -121,7 +121,7 @@ export const createWebhook = async (
 export const webhook = async (
   req: Request,
   res: Response
-  ): Promise<Response> => {
+): Promise<Response> => {
   const { type } = req.params;
   const { evento } = req.body;
   if (evento === "teste_webhook") {
@@ -138,28 +138,28 @@ export const webhook = async (
         const { solicitacaoPagador } = detahe;
         const invoiceID = solicitacaoPagador.replace("#Fatura:", "");
         const invoices = await Invoices.findByPk(invoiceID);
-        const companyId =invoices.companyId;
+        const companyId = invoices.companyId;
         const company = await Company.findByPk(companyId);
         const expiresAt = new Date(company.dueDate);
         const recurrence = company.recurrence;
-                if(recurrence == 'MENSAL'){
-                expiresAt.setDate(expiresAt.getDate() + 30);
-                }else if ((recurrence == 'TRIMESTRAL')){
-                    expiresAt.setDate(expiresAt.getDate() + 90);
-                }
-                else if ((recurrence == 'SEMESTRAL')){
-                    expiresAt.setDate(expiresAt.getDate() + 180);
-                }
-                else if ((recurrence == 'ANUAL')){
-                    expiresAt.setDate(expiresAt.getDate() + 360);
-                }
+        if (recurrence == 'MENSAL') {
+          expiresAt.setDate(expiresAt.getDate() + 30);
+        } else if ((recurrence == 'TRIMESTRAL')) {
+          expiresAt.setDate(expiresAt.getDate() + 90);
+        }
+        else if ((recurrence == 'SEMESTRAL')) {
+          expiresAt.setDate(expiresAt.getDate() + 180);
+        }
+        else if ((recurrence == 'ANUAL')) {
+          expiresAt.setDate(expiresAt.getDate() + 360);
+        }
         const date = expiresAt.toISOString().split("T")[0];
 
         if (company) {
           await company.update({
             dueDate: date
           });
-         const invoi = await invoices.update({
+          const invoi = await invoices.update({
             id: invoiceID,
             status: 'paid'
           });
@@ -190,7 +190,7 @@ export const handleAsaasWebhook = async (req: Request, res: Response): Promise<v
 
 
   if (event.payment.status === "CONFIRMED") {
-   
+
     const customerid = event.payment.customer;
 
     const UserPagante = await User.findOne({
@@ -199,7 +199,7 @@ export const handleAsaasWebhook = async (req: Request, res: Response): Promise<v
       }
     });
 
-  
+
     const companyId = UserPagante.companyId;
     const company = await Company.findByPk(companyId);
     const expiresAt = new Date(company.dueDate);
@@ -227,35 +227,34 @@ export const handleAsaasWebhook = async (req: Request, res: Response): Promise<v
 
     const date = expiresAt.toISOString().split("T")[0];
 
-        if (company) {
-          await company.update({
-            dueDate: date
-          });
-        
+    if (company) {
+      await company.update({
+        dueDate: date
+      });
 
-          const invoi = await invoices.update({
-            id: invoiceID,
-            status: 'paid'
-          });
 
-          await company.reload();
-          
-          const io = getIO();
-          const companyUpdate = await Company.findOne({
-            where: {
-              id: companyId
-            }
-          });
+      const invoi = await invoices.update({
+        id: invoiceID,
+        status: 'paid'
+      });
 
-          io.emit(`company-${companyId}-payment`, {
-            action: event.payment.status,
-            company: companyUpdate
-          });
+      await company.reload();
+
+      const io = getIO();
+      const companyUpdate = await Company.findOne({
+        where: {
+          id: companyId
         }
+      });
 
-      }
+      io.emit(`company-${companyId}-payment`, {
+        action: event.payment.status,
+        company: companyUpdate
+      });
+    }
+
+  }
   // Processar o evento recebido
-  console.log('Evento do Asaas recebido:', event);
 
   res.status(200).send('Webhook recebido com sucesso!');
 };
