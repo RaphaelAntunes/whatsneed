@@ -164,16 +164,16 @@ export const codecontact = async (req: Request, res: Response): Promise<Response
 
 
   const canCreateContact = await verifyContact(newContact.number);
- 
+  
   
   if(canCreateContact){
 
-  if (canCreateContact.confirmedphone != "true") {
+  if (canCreateContact.confirmedphone != 'true') {
     const { contacts, count, hasMore } = await ListContactsService({ companyId });
 
     const contact = contacts.find(c => c.number === newContact.number);
-    const contactid = String(contact.id);
 
+    const contactid = String(contact.id);
 
     if (contact) {
 

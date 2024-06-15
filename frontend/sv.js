@@ -2,7 +2,7 @@
 const cors_proxy = require('cors-anywhere');
 
 const host = 'localhost';
-const port = 8080;
+const port = 9999;
 
 cors_proxy.createServer({
   originWhitelist: [], // Permitir todas as origens

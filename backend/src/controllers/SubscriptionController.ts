@@ -7,6 +7,8 @@ import AppError from "../errors/AppError";
 import options from "../config/Gn";
 import Company from "../models/Company";
 import Invoices from "../models/Invoices";
+import User from "../models/User";
+
 import Subscriptions from "../models/Subscriptions";
 import { getIO } from "../libs/socket";
 import UpdateUserService from "../services/UserServices/UpdateUserService";
@@ -72,30 +74,6 @@ export const createSubscription = async (
     if (!updateCompany) {
       throw new AppError("Company not found", 404);
     }
-
-
-/*     await Subscriptions.create({
-      companyId,
-      isActive: false,
-      userPriceCents: users,
-      whatsPriceCents: connections,
-      lastInvoiceUrl: pix.location,
-      lastPlanChange: new Date(),
-      providerSubscriptionId: pix.loc.id,
-      expiresAt: new Date()
-    }); */
-
-/*     const { id } = req.user;
-    const userData = {};
-    const userId = id;
-    const requestUserId = parseInt(id);
-    const user = await UpdateUserService({ userData, userId, companyId, requestUserId }); */
-
-    /*     const io = getIO();
-        io.emit("user", {
-          action: "update",
-          user
-        }); */
 
 
     return res.json({
@@ -207,14 +185,77 @@ export const webhook = async (
   return res.json({ ok: true });
 };
 
-export const handleAsaasWebhook = (req: Request, res: Response): void => {
+export const handleAsaasWebhook = async (req: Request, res: Response): Promise<Response> => {
   const event = req.body;
 
+
+  if (event.payment.status === "CONFIRMED") {
+   
+    const customerid = event.payment.customer;
+
+    const UserPagante = await User.findOne({
+      where: {
+        customer_id: customerid
+      }
+    });
+
+  
+    const companyId = UserPagante.companyId;
+    const company = await Company.findByPk(companyId);
+    const expiresAt = new Date(company.dueDate);
+    const recurrence = company.recurrence;
+
+    const invoices = await Invoices.findOne({
+      where: {
+        companyId: UserPagante.companyId
+      }
+    });
+
+    const invoiceID = invoices.id;
+
+
+    console.log(invoices);
+    if (recurrence == 'MENSAL') {
+      expiresAt.setDate(expiresAt.getDate() + 30);
+    } else if (recurrence == 'TRIMESTRAL') {
+      expiresAt.setDate(expiresAt.getDate() + 90);
+    } else if (recurrence == 'SEMESTRAL') {
+      expiresAt.setDate(expiresAt.getDate() + 180);
+    } else if (recurrence == 'ANUAL') {
+      expiresAt.setDate(expiresAt.getDate() + 360);
+    }
+
+    const date = expiresAt.toISOString().split("T")[0];
+
+        if (company) {
+          await company.update({
+            dueDate: date
+          });
+        
+
+          const invoi = await invoices.update({
+            id: invoiceID,
+            status: 'paid'
+          });
+
+          await company.reload();
+          
+          const io = getIO();
+          const companyUpdate = await Company.findOne({
+            where: {
+              id: companyId
+            }
+          });
+
+          io.emit(`company-${companyId}-payment`, {
+            action: event.payment.status,
+            company: companyUpdate
+          });
+        }
+
+      }
   // Processar o evento recebido
   console.log('Evento do Asaas recebido:', event);
 
-  // Adicione aqui a lógica para processar diferentes tipos de eventos
-
-  // Responder ao Asaas para confirmar o recebimento do webhook
   res.status(200).send('Webhook recebido com sucesso!');
 };
