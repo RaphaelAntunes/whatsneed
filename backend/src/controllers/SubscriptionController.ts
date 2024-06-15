@@ -185,7 +185,7 @@ export const webhook = async (
   return res.json({ ok: true });
 };
 
-export const handleAsaasWebhook = async (req: Request, res: Response): Promise<Response> => {
+export const handleAsaasWebhook = async (req: Request, res: Response): Promise<void> => {
   const event = req.body;
 
 
