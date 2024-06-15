@@ -45,6 +45,7 @@ export default function CheckoutPage(props) {
   const history = useHistory();
   const { dateToClient } = useDate();
   const corsURL = process.env.REACT_APP_BACKEND_CORS_URL; 
+  const assaskey = process.env.ASAAS_KEY; 
 
   useEffect(() => {
     const companyId = localStorage.getItem("companyId");
@@ -108,7 +109,7 @@ export default function CheckoutPage(props) {
               headers: {
                 accept: 'application/json',
                 'content-type': 'application/json',
-                access_token: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ=='
+                access_token: assaskey
               },
               body: JSON.stringify({ name: user.name, cpfCnpj: '21620615037' })
             };
@@ -145,7 +146,7 @@ export default function CheckoutPage(props) {
                   headers: {
                     accept: 'application/json',
                     'content-type': 'application/json',
-                    access_token: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ=='
+                    access_token: assaskey
                   },
                   body: JSON.stringify({
                     billingType: 'CREDIT_CARD',
@@ -178,7 +179,7 @@ export default function CheckoutPage(props) {
             method: 'GET',
             headers: {
               accept: 'application/json',
-              access_token: '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwODI3ODI6OiRhYWNoXzg4NWUyYzdlLTdmMWEtNDkzNy1iNTk2LWUwNDE0MjEyNTI5MQ=='
+              access_token: assaskey
             }
           };
           
