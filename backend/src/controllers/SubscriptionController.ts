@@ -199,62 +199,67 @@ export const handleAsaasWebhook = async (req: Request, res: Response): Promise<v
       }
     });
 
-
-    const companyId = UserPagante.companyId;
-    const company = await Company.findByPk(companyId);
-    const expiresAt = new Date(company.dueDate);
-    const recurrence = company.recurrence;
-
-    const invoices = await Invoices.findOne({
-      where: {
-        companyId: UserPagante.companyId
-      }
-    });
-
-    const invoiceID = invoices.id;
+    if (UserPagante) {
 
 
-    console.log(invoices);
-    if (recurrence == 'MENSAL') {
-      expiresAt.setDate(expiresAt.getDate() + 30);
-    } else if (recurrence == 'TRIMESTRAL') {
-      expiresAt.setDate(expiresAt.getDate() + 90);
-    } else if (recurrence == 'SEMESTRAL') {
-      expiresAt.setDate(expiresAt.getDate() + 180);
-    } else if (recurrence == 'ANUAL') {
-      expiresAt.setDate(expiresAt.getDate() + 360);
-    }
+      const companyId = UserPagante.companyId;
+      const company = await Company.findByPk(companyId);
+      const expiresAt = new Date(company.dueDate);
+      const recurrence = company.recurrence;
 
-    const date = expiresAt.toISOString().split("T")[0];
-
-    if (company) {
-      await company.update({
-        dueDate: date
-      });
-
-
-      const invoi = await invoices.update({
-        id: invoiceID,
-        status: 'paid'
-      });
-
-      await company.reload();
-
-      const io = getIO();
-      const companyUpdate = await Company.findOne({
+      const invoices = await Invoices.findOne({
         where: {
-          id: companyId
+          companyId: UserPagante.companyId
         }
       });
 
-      io.emit(`company-${companyId}-payment`, {
-        action: event.payment.status,
-        company: companyUpdate
-      });
+      const invoiceID = invoices.id;
+
+
+      console.log(invoices);
+      if (recurrence == 'MENSAL') {
+        expiresAt.setDate(expiresAt.getDate() + 30);
+      } else if (recurrence == 'TRIMESTRAL') {
+        expiresAt.setDate(expiresAt.getDate() + 90);
+      } else if (recurrence == 'SEMESTRAL') {
+        expiresAt.setDate(expiresAt.getDate() + 180);
+      } else if (recurrence == 'ANUAL') {
+        expiresAt.setDate(expiresAt.getDate() + 360);
+      }
+
+      const date = expiresAt.toISOString().split("T")[0];
+
+      if (company) {
+        await company.update({
+          dueDate: date
+        });
+
+
+        const invoi = await invoices.update({
+          id: invoiceID,
+          status: 'paid'
+        });
+
+        await company.reload();
+
+        const io = getIO();
+        const companyUpdate = await Company.findOne({
+          where: {
+            id: companyId
+          }
+        });
+
+        io.emit(`company-${companyId}-payment`, {
+          action: event.payment.status,
+          company: companyUpdate
+        });
+      }
+
     }
+    // Processar o evento recebido
+    res.status(200).send('Webhook recebido com sucesso!');
 
+  } else {
+    res.status(200).send('Webhook recebido com sucesso!');
   }
-  // Processar o evento recebido
-
-  res.status(200).send('Webhook recebido com sucesso!');
 };
